@@ -10,7 +10,7 @@ class Wallet {
      *
      * @params {services} - Angular services to inject
      */
-    constructor(AppConstants, $localStorage, Alert, $timeout, AddressBook, Trezor, DataStore) {
+    constructor(AppConstants, $localStorage, Alert, $timeout, AddressBook, Trezor, DataStore, QR, $filter) {
         'ngInject';
 
         //// Service dependencies region ////
@@ -22,6 +22,8 @@ class Wallet {
         this._AddressBook = AddressBook;
         this._Trezor = Trezor;
         this._DataStore = DataStore;
+        this._QR = QR;
+        this._$filter = $filter;
 
         //// End dependencies region ////
 
@@ -242,9 +244,16 @@ class Wallet {
         let alg = algo || this.algo;
 
         // Try to generate or decrypt key
-        if (!nem.crypto.helpers.passwordToPrivatekey(common, acct, alg)) {
-            this._Alert.invalidPassword();
-            return false;
+        if (alg != 'viewonly') {
+            if (!common.password) {
+                this._Alert.invalidPassword();
+                return false;
+            } else if (!nem.crypto.helpers.passwordToPrivatekey(common, acct, alg)) {
+                this._Alert.invalidPassword();
+                return false;
+            }
+        } else {
+            common.isHW = true;
         }
 
         // Step out if using HW wallet
@@ -263,14 +272,47 @@ class Wallet {
         // HW wallet
         if (common.isHW) {
             // Serialize, sign and broadcast
-            if (this.algo == "trezor") {
+            if (this.algo == 'trezor') {
                 return this._Trezor.serialize(transaction, account).then((serialized) => {
                     return nem.com.requests.transaction.announce(this.node, JSON.stringify(serialized));
                 });
+            } else if (this.algo == 'viewonly') {
+                let self = this;
+                let dlg = $("#generateQrModalDlg");
+                let result = undefined;
+                //wrong tx signer; now it is pubkey derived from zero pk => 462ee976890916e54fa825d26bdd0235f5eb5b6a143c199ab0ae5ee9328e08ce
+                //because it is derived from pk during preparing, and there is no pk in the common object; put  it here and fix it during signing 
+                transaction.signer = "";
+                self._QR.generateQR(JSON.stringify(transaction), 400, $("#generateQrCodeHere1of2"));
+                self._QR.scanQR((value) => {
+                    //dummy sanity check
+                    let json = JSON.parse(value);
+                    return (json && json.data && json.signature);
+                }, (value) => {
+                    result = JSON.parse(value);
+                    dlg.modal("hide");
+                }, $('#performQrCodeScanHere2of2'));
+                return new Promise(function(resolve) {
+                    if (dlg) {
+                        dlg.modal("show").on("hide.bs.modal", function() {
+                            $(this).off('hide.bs.modal');
+                            self._QR.stopScanQR();
+                            if (result) {
+                                return nem.com.requests.transaction.announce(self.node, JSON.stringify(result));
+                            } else {
+                                resolve({code:2, message:(self._$filter('translate')('ALERT_QR_SIGNEDTX_IMPORT_FAIL'))});
+                            }
+                        });
+                    } else {
+                        console.log("#generateQrModalDlg missing");
+                        resolve({code:2, message:"DOM element #generateQrModalDlg missing."});
+                    }                    
+                });
             }
+        } else {
+            // Normal wallet
+            return nem.model.transactions.send(common, transaction, this.node);
         }
-        // Normal wallet
-        return nem.model.transactions.send(common, transaction, this.node);
     }
 
     /**
@@ -314,7 +356,7 @@ class Wallet {
      */
     needsUpgrade(wallet) {
         if (!wallet) return false;
-        if (!wallet.accounts[0].child) return true;
+        if (!wallet.accounts[0].child && wallet.accounts[0].algo!=='viewonly') return true;
         return false;
     }
 
@@ -323,7 +365,7 @@ class Wallet {
         if (!this.decrypt(common, account, algo, network)) return Promise.reject(true);
 
         if (common.isHW) {
-            if (algo == "trezor") {
+            if (algo == 'trezor') {
                 return this._Trezor.deriveRemote(account, network);
             } else {
                 return Promise.reject(true);
@@ -417,7 +459,7 @@ class Wallet {
         if (!this.decrypt(common, primary, primary.algo, primary.network)) return Promise.reject(false);
 
         if (common.isHW) {
-            if (primary.algo == "trezor") {
+            if (primary.algo == 'trezor') {
                 return this._Trezor.createAccount(primary.network, newAccountIndex, label);
             } else {
                 return Promise.reject(true);
@@ -476,24 +518,18 @@ class Wallet {
      *
      * @param {object} common - A common object
      * @param {object} wallet - A wallet object
+     * @param {object} destination - $("#whereToPutTheImage")
      *
      * @return {HTMLelement} - An HTML element to append in the view 
      */
-    generateQR(common, wallet) {
+    generateQR(common, wallet, destination) {
         let wlt  = wallet || this.current;
         if (!this.decrypt(common, wlt.accounts[0], wlt.accounts[0].algo, wlt.accounts[0].network)) return false;
         // Encrypt private key for mobile apps
         let mobileKeys = nem.crypto.helpers.toMobileKey(common.password, common.privateKey);
         // Create model
         let QR = nem.model.objects.create("walletQR")(this.network === nem.model.network.data.testnet.id ? 1 : 2, 3, this.current.name, mobileKeys.encrypted, mobileKeys.salt);
-        let code = kjua({
-            size: 256,
-            text: JSON.stringify(QR),
-            fill: '#000',
-            quiet: 0,
-            ratio: 2,
-        });
-        return code;
+        this._QR.generateQR(JSON.stringify(QR), 256, destination);
     }
 
     /**

@@ -12,6 +12,7 @@
         <h4 ng-show="$ctrl._selectedType.type === 1 && !($ctrl.step5 || $ctrl.step6 || $ctrl.step7 || $ctrl.step8)">{{ 'SIGNUP_CREATE_WALLET_BUTTON' | translate }}</h4>
         <h4 ng-show="$ctrl._selectedType.type === 2 && !($ctrl.step5 || $ctrl.step6 || $ctrl.step7 || $ctrl.step8)">{{ 'SIGNUP_BRAIN_WALLET_BUTTON' | translate }}</h4>
         <h4 ng-show="$ctrl._selectedType.type === 3 && !($ctrl.step5 || $ctrl.step6 || $ctrl.step7 || $ctrl.step8)">{{'SIGNUP_PRIVATE_KEY_WALLET_BUTTON' | translate}}</h4>
+        <h4 ng-show="$ctrl._selectedType.type === 4 && !($ctrl.step5 || $ctrl.step6 || $ctrl.step7 || $ctrl.step8)">{{'SIGNUP_VIEWONLY_WALLET_BUTTON' | translate}}</h4>
         <h4 ng-show="$ctrl._selectedType.type && ($ctrl.step5 || $ctrl.step6 || $ctrl.step7 || $ctrl.step8)">{{ 'SIGNUP_COMMON_WALLET_WARNING_TITLE' | translate }}</h4>
         <hr>
       </div>
@@ -24,7 +25,10 @@
           {{'SIGNUP_BRAIN_WALLET_TITLE' | translate}}
         </button>-->
         <button class="btn btn-primary" ng-click="$ctrl.changeWalletType(3);$ctrl.start = true;" ng-mouseover="$ctrl.showInfo = 3;">
-          {{'SIGNUP_PRIVATE_KEY_WALLET_TITLE' | translate}}
+            {{'SIGNUP_PRIVATE_KEY_WALLET_TITLE' | translate}}
+          </button>
+        <button class="btn btn-primary" ng-click="$ctrl.changeWalletType(4);$ctrl.start = true;" ng-mouseover="$ctrl.showInfo = 4;">
+          {{'SIGNUP_VIEWONLY_WALLET_TITLE' | translate}}
         </button>
       </div>
       <!--<div class="col-md-4 col-md-offset-4 col-sm-6" ng-show="!$ctrl._selectedType">
@@ -63,7 +67,14 @@
           <span ng-bind-html="'SIGNUP_PRIVATE_KEY_WALLET_WARNING' | translate"></span>
         </p>
       </div>
-    </div>
+      <div ng-show="$ctrl.showInfo === 4">
+          <p> <span class="fa fa-info-circle" aria-hidden="true"></span> {{'SIGNUP_VIEWONLY_WALLET_INFO' | translate}}</p>
+          <p>
+            <i class="fa fa-exclamation-triangle"></i>
+            <span ng-bind-html="'SIGNUP_VIEWONLY_WALLET_WARNING' | translate"></span>
+          </p>
+        </div>
+      </div>
     <!-- Start the signup process -->
     <div class="col-md-offset-3 col-md-6" ng-show="$ctrl.start">
       <div class="form-group">
@@ -118,7 +129,7 @@
           <button class="btn btn-dark" ng-click="$ctrl._selectedType = undefined;$ctrl.hideAllSteps();$ctrl.exitEntropy();" style="width:auto;" ng-show="!$ctrl.step5 && !$ctrl.step6 && !$ctrl.step7 && !$ctrl.step8"><span class="fa fa-chevron-left" aria-hidden="true"></span> {{ 'GENERAL_GO_BACK' | translate }}</button>
         </div>
         <div class="col-md-10 col-sm-6">
-          <button class="btn btn-primary" style="width:100%;" ng-click="$ctrl.step2 = false;$ctrl.step3 = true;" ng-disabled="!$ctrl.formData.walletName || $ctrl.checkWalletNamePresence()">{{ 'GENERAL_NEXT' | translate }} <span class="fa fa-chevron-right" aria-hidden="true"></span></button>
+          <button class="btn btn-primary" style="width:100%;" ng-click="$ctrl.step2 = false;$ctrl.step4 = true;" ng-disabled="!$ctrl.formData.walletName || $ctrl.checkWalletNamePresence()">{{ 'GENERAL_NEXT' | translate }} <span class="fa fa-chevron-right" aria-hidden="true"></span></button>
         </div>
       </div>
     </div>
@@ -221,7 +232,23 @@
         </div>
       </div>
     </div>
-    <!-- 5th step: Start safety protocol -->
+    <!-- 4th step (if view only wallet): Enter and address -->
+    <div class="col-md-offset-3 col-md-6" ng-show="$ctrl.step4 && $ctrl._selectedType.type === 4">
+        <!-- Public address of account to import -->
+        <fieldset class="form-group">
+          <p class="text-center">{{ 'SIGNUP_CREATE_ENTER_ADDRESS' | translate }}</p>
+          <input class="form-control" type="text" placeholder="{{'FORM_ADDRESS_FIELD_PLACEHOLDER' | translate}}" ng-model="$ctrl.formData.viewOnlyAddress" />
+        </fieldset>
+        <div class="row form-group">
+          <div class="col-md-2 col-sm-6">
+            <button class="btn btn-dark" ng-click="$ctrl._selectedType = undefined;$ctrl.hideAllSteps();$ctrl.exitEntropy();" style="width:auto;" ng-show="!$ctrl.step5 && !$ctrl.step6 && !$ctrl.step7 && !$ctrl.step8"><span class="fa fa-chevron-left" aria-hidden="true"></span> {{ 'GENERAL_GO_BACK' | translate }}</button>
+          </div>
+          <div class="col-md-10 col-sm-6">
+            <button class="btn btn-primary" style="width:100%;" ng-click="$ctrl.createViewOnlyWallet()" ng-disabled="$ctrl.okPressed">{{ 'GENERAL_NEXT' | translate }} <span class="fa fa-chevron-right" aria-hidden="true"></span></button>
+          </div>
+        </div>
+      </div>
+      <!-- 5th step: Start safety protocol -->
     <div class="col-md-offset-3 col-md-6" ng-show="$ctrl.step5">
       <div class="form-group">
         <p><i class="fa fa-exclamation-triangle"></i> <span ng-bind-html="'SIGNUP_COMMON_WALLET_WARNING_1' | translate "></span></p>

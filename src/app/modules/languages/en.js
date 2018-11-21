@@ -679,6 +679,7 @@ function EnglishProvider($translateProvider) {
         SIGNUP_CREATE_START_CONNECTION_WARNING: 'It is recommended to disconnect from internet while creating your wallet and backing up your data.',
         SIGNUP_CREATE_READY_BTN: 'Ready',
         SIGNUP_CREATE_ENTER_NAME: 'Enter a wallet name',
+        SIGNUP_CREATE_ENTER_ADDRESS: 'Enter an address',
         SIGNUP_CREATE_ENTER_PASSWORD: 'Enter a password',
         SIGNUP_CREATE_ENTER_PASSPHRASE: 'Enter a passphrase',
         SIGNUP_CREATE_CONFIRM_PASSWORD: 'Confirm above password',
@@ -786,6 +787,15 @@ function EnglishProvider($translateProvider) {
         TREZOR_TEXT: 'The TREZOR hardware wallet allows you to secure your XEM, mosaics and multisig accounts',
         TREZOR_BUTTON: 'Login with TREZOR',
 
+        // VIEWONLY RELATED
+        SIGNUP_VIEWONLY_WALLET_TITLE: 'View only wallet',
+        SIGNUP_VIEWONLY_WALLET_INFO: 'View-only wallet doesn\'t store the private key at all. Operations involving private key (signing transactions, encrypting/decrypting messages) have to be delagated to another wallet.',
+        SIGNUP_VIEWONLY_WALLET_BUTTON: 'Create view only wallet',
+        SIGNUP_VIEWONLY_WALLET_WARNING: 'Note that operations involving private key (signing transactions, encrypting/decrypting messages) may not be suppoorted fully.',
+        ALERT_NOT_SUPPORTED_FOR_VIEWONLY_WALLET: 'Not supported for View-only wallet',
+        VIEWONLY_NOT_SUPPORTED: 'Not supported for View-only wallet.',
+
+
         // CREATE OFFLINE TRANSACTION MODULE
         OFFLINE_TX_TITLE: 'Prepare an offline transaction',
         OFFLINE_TX_NO_WALLET: 'Please import a wallet from login module to see the form.',
@@ -855,7 +865,12 @@ function EnglishProvider($translateProvider) {
         IMPORT_WALLET_QRCODE_INFORMATION: 'Support wallet QR code: NEM wechat wallet, ios, android.',
         IMPORT_WALLET_QRCODE_LOAD: 'Load wallet QR code',
         IMPORT_WALLET_QRCODE_SCAN: 'Scan',
-        IMPORT_WALLET_QRCODE_STOP_SCAN: 'Stop scan'
+        IMPORT_WALLET_QRCODE_STOP_SCAN: 'Stop scan',
+
+        // IMPORT EXPORT QR TX
+        EXPORT_IMPORT_QRCODE: 'Transaction QR export/import',
+        ALERT_QR_SIGNEDTX_IMPORT_FAIL: 'Failed to import signed transaction - NOT sent',
+        IMPORT_UNSIGNEDTX_QRCODE: 'Import QR of any transaction to sign'
 
     });
 

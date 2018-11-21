@@ -8,7 +8,7 @@ class OfflineTransactionCreateCtrl {
      *
      * @params {services} - Angular services to inject
      */
-    constructor(Wallet, Alert, DataStore, $state, $timeout, $localStorage, AddressBook) {
+    constructor(Wallet, Alert, DataStore, $state, $timeout, $localStorage, $scope, AddressBook, QR) {
         'ngInject';
 
         //// Module dependencies region ////
@@ -21,7 +21,8 @@ class OfflineTransactionCreateCtrl {
         this._Helpers = Helpers;
         this._storage = $localStorage;
         this._AddressBook = AddressBook;
-
+        this._QR = QR;
+        this._$scope = $scope;
         //// End dependencies region ////
 
         // Initialization
@@ -155,27 +156,9 @@ class OfflineTransactionCreateCtrl {
     }
 
     /**
-     * Generate a transaction QR
-     */
-    generateTransactionQR() {
-        // Account info model for QR
-        let code = kjua({
-            size: 300,
-            text: this.resultSafeTransaction,
-            fill: '#000',
-            quiet: 0,
-            ratio: 2,
-            ecLevel: 'L'
-        });
-        $('#signedTransactionQR').html("");
-        $('#signedTransactionQR').append(code);
-        return;
-}
-
-    /**
      * Create the signed transaction
      */
-    create() {
+    create(entity) {
         // Disable send button
         this.okPressed = true;
 
@@ -183,18 +166,30 @@ class OfflineTransactionCreateCtrl {
         let primary = this.selectedWallet.accounts[0];
         if (!this._Wallet.decrypt(this.common, this.selectedAccount, primary.algo, primary.network)) return this.okPressed = false;
 
-        // Prepare the transaction
-        let entity = this.prepareTransaction();
+        if (!entity) {
+            // Prepare the transaction
+            entity = this.prepareTransaction();
 
-        // Sending will be blocked if recipient is an exchange and no message set
-        if (!this._Helpers.isValidForExchanges(entity)) {
-            this.okPressed = false;
-            this._Alert.exchangeNeedsMessage();
-            return;
+            // Sending will be blocked if recipient is an exchange and no message set
+            if (!this._Helpers.isValidForExchanges(entity)) {
+                this.okPressed = false;
+                this._Alert.exchangeNeedsMessage();
+                return;
+            }
         }
 
         // Create a key pair object from private key
         let kp = nem.crypto.keyPair.create(nem.utils.helpers.fixPrivateKey(this.common.privateKey));
+
+        // Fix signer if empty => this publicKey
+        if (!entity.signer) {
+            entity.signer = kp.publicKey.toString();
+        }
+        // Encrypt message if not encrypted yet
+        if (entity.message && entity.message.type===2 && entity.message.publicKey) {
+            // TODO: message.payload contains hex of the message, need to either dehex it first ... or?
+            entity.message.payload = nem.crypto.helpers.encode(nem.utils.helpers.fixPrivateKey(this.common.privateKey), entity.message.publicKey, entity.message.payload);
+        }
 
         // Serialize the transaction
         let serialized = nem.utils.serialization.serializeTransaction(entity);
@@ -208,10 +203,44 @@ class OfflineTransactionCreateCtrl {
             'signature': signature.toString()
         });
 
-        this.generateTransactionQR();
+        this._QR.generateQR(this.resultSafeTransaction, 300, $('#signedTransactionQR'));
 
         this.okPressed = false;
     }
+
+    /**
+     * Import transaction data/entity from QR code
+     */
+    scanAndSign() {
+        let primary = this.selectedWallet.accounts[0];
+        if (primary.algo === 'viewonly') {
+            this.okPressed = false;
+            this._Alert.notSupportedForViewOnlyWallet();
+            return;
+        }
+
+        let dlg = $("#generateQrModalDlg");
+        let self = this;
+        let entity = undefined;
+        self._QR.scanQR((value) => {
+            let json = JSON.parse(value);
+            //signer has to be empty!
+            return json && json["type"] && json["version"] && !json["signer"] && json["timeStamp"] && json["deadline"];
+        }, (value) => {
+            entity = JSON.parse(value);
+            dlg.modal("hide");
+        });
+        if (dlg) {
+            dlg.modal("show").on("hide.bs.modal", function() {
+                $(this).off('hide.bs.modal');
+                self._QR.stopScanQR();
+                if (entity) {
+                    self.create(entity);
+                    self._$scope.$apply();
+                }
+            });
+        }
+     }
 
     //// End methods region ////
 

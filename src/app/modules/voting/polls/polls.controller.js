@@ -310,7 +310,7 @@ class pollsCtrl {
             issueList.push("No option selected");
         }
         //no passwd
-        if (this.common.password === "" && this._Wallet.algo !== 'trezor') {
+        if (this.common.password === "" && this._Wallet.algo !== 'trezor' && this._Wallet.algo !== 'viewonly') {
             issueList.push("No password");
         }
         this.invalidVote = (issueList.length > 0);

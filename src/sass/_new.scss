@@ -266,6 +266,7 @@ label {
   border-color: $blue;
   width: 100%;
   border-radius: 0px;
+  margin-bottom: $pad;
 }
 .btn-success:hover, .btn-success:active, .btn-success:focus {
   background-color: $blueLite !important;
