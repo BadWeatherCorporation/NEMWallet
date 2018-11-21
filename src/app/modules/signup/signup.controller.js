@@ -77,6 +77,9 @@ class SignupCtrl {
         // Password strength info given by zxcvbn
         this.passwordStrengthInfo = {};
 
+        // ui state
+        this.state = -1;
+
         //// End properties region ////
         
         // Will stop catching entropy if user change page in the middle of movement capture
@@ -86,6 +89,30 @@ class SignupCtrl {
     }
 
     //// Module methods region ////
+
+    /**
+     * Check state
+     * @param {*} state
+     */
+    isState(state) {
+        return this.isStateIn([state]);
+    }
+
+    /**
+     * Check state
+     * @param {*} states
+     */
+    isStateIn(states) {
+        return states.includes(this.state);
+    }
+
+    /**
+     * Set state
+     * @param {*} state
+     */
+    setState(state) {
+        this.state = state;
+    }
 
     /**
      * Change the selected wallet type
@@ -161,10 +188,7 @@ class SignupCtrl {
                         // Set the decrypted private key for view
                         this.walletPrivateKey = common.privateKey;
                     }
-                    // Hide step
-                    this.step4 = false;
-                    // Show next step
-                    this.step5 = true;
+                    this.setState(5);
                     return;
                 }
             }, 10);
@@ -206,10 +230,7 @@ class SignupCtrl {
                     this.arrangeSafetyProtocol(wallet);
                     // Store private key for account safety protocol
                     this.walletPrivateKey = nem.crypto.helpers.derivePassSha(this.formData.password, 6000).priv;
-                    // Hide step
-                    this.step3 = false;
-                    // Show next step
-                    this.step5 = true;
+                    this.setState(5);
                     return;
                 }
             }, 10);
@@ -238,10 +259,7 @@ class SignupCtrl {
                     //
                     this.arrangeSafetyProtocol(wallet);
                     this.walletPrivateKey = this.formData.privateKey;
-                    // Hide step
-                    this.step4 = false;
-                    // Show next step
-                    this.step5 = true;
+                    this.setState(5);
                     return;
                 }
             }, 10);
@@ -263,10 +281,7 @@ class SignupCtrl {
                 if (wallet && typeof wallet === 'object') {
                     //
                     this.arrangeSafetyProtocol(wallet);
-                    // Hide step
-                    this.step4 = false;
-                    // Show final step
-                    this.step8 = true;
+                    this.setState(8);
                     return;
                 }
             }, 10);
@@ -321,11 +336,7 @@ class SignupCtrl {
      * Hide signup steps / reset to wallet type selection
      */
     hideAllSteps() {
-        this.start = false;
-        this.step1 = false;
-        this.step2 = false;
-        this.step3 = false;
-        this.step4 = false;
+        this.setState(-1);
         this.progressBar = false;
         this.entropyDone = false;
         document.getElementById("pBar").style.width = '0%';
@@ -375,8 +386,7 @@ class SignupCtrl {
         this._Alert.createWalletSuccess();
         // Reset form data
         this.formData = {};
-        this.step8 = false;
-        this.step9 = true;
+        this.setState(9);
     }
 
     /**

@@ -20,7 +20,7 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" ng-show="$ctrl.selectedWallet && $ctrl.selectedWallet.accounts[0].algo !== 'viewonly'">
             <div class="input-group">
               <span class="input-group-btn">
                 <p>{{ 'FORM_PASSWORD' | translate }}: </p>
