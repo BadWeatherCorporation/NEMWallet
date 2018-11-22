@@ -42,7 +42,7 @@ var autoprefixerOptions = {
 // Task for app files
 gulp.task('browserify', ['views'], function() {
   return browserify('./src/app/app.js')
-      .transform(babelify, {presets: ["es2015"]})
+      .transform("babelify", {presets: ["@babel/preset-env"]})
       .transform(ngAnnotate)
       .bundle()
       .on('error', interceptErrors)
@@ -55,7 +55,7 @@ gulp.task('browserify', ['views'], function() {
 // Task for test files
 gulp.task('browserifyTests', function() {
   return browserify(specsArray)
-      .transform(babelify, {presets: ["es2015"]})
+      .transform("babelify", {presets: ["@babel/preset-env"]})
       .transform(ngAnnotate)
       .bundle()
       .on('error', interceptErrors)
