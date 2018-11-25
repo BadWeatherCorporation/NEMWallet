@@ -38,6 +38,20 @@ If the circle next to `Node` is red, click on it and select another node from th
 
 <pre>npm install</pre>
 
+Dependencies nem-voting and nem-trezor are using outdated version of nem-library. Also, browserify, for some reason, is generating a code which creates two instances of nem-library, causing problems during NEMLibrary.bootstrap. To work around these issues, we can install the nem-library of desired version globally and symlink it from respective node_modules locations.
+
+<pre>find . -type d -name nem-library -exec rm -rf {} \;</pre>
+
+<pre>npm install -g nem-library@1.0.9</pre>
+
+<pre>cd node_modules; npm link nem-library</pre>
+
+<pre>cd node_modules/nem-voting/node_modules; npm link nem-library</pre>
+
+<pre>cd node_modules/nem-trezor/node_modules; npm link nem-library</pre>
+
+It is a bit complicated - please propose a better solution if you know one.
+
 3) Build:
 
 <pre>gulp</pre>
