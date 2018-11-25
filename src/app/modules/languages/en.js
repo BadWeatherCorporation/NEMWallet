@@ -29,6 +29,7 @@ function EnglishProvider($translateProvider) {
         HEADER_PURGE_MESSAGE: 'Please confirm the purge of local storage. By clicking "Purge" all wallets in your browser local storage will be deleted and will not be recoverable. You agree that all wallets have been backed up and funds are secured.',
         HEADER_OFFLINE_TX: 'Prepare an offline transaction',
         HEADER_RELEASE_TX: 'Release a transaction',
+        HEADER_SIGN_QR_TX: 'Sign QR transaction',
 
         // FOOTER COMPONENT
         FOOTER_POWERED_BY_1: 'Powered by',
@@ -870,8 +871,7 @@ function EnglishProvider($translateProvider) {
         // IMPORT EXPORT QR TX
         EXPORT_IMPORT_QRCODE: 'Transaction QR export/import',
         ALERT_QR_SIGNEDTX_IMPORT_FAIL: 'Failed to import signed transaction - NOT sent',
-        IMPORT_UNSIGNEDTX_QRCODE: 'Import QR of any transaction to sign'
-
+        IMPORT_UNSIGNEDTX_QRCODE: 'Import QR of any transaction to sign',
     });
 
 }
