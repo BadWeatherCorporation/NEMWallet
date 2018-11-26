@@ -227,7 +227,9 @@ class OfflineTransactionCreateCtrl {
             //signer has to be empty!
             return json && json["type"] && json["version"] && !json["signer"] && json["timeStamp"] && json["deadline"];
         }, (value) => {
-            entity = JSON.parse(value);
+            if (value) {
+                entity = JSON.parse(value);
+            }
             dlg.modal("hide");
         });
         if (dlg) {

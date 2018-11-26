@@ -285,11 +285,21 @@ class Wallet {
                 transaction.signer = "";
                 self._QR.generateQR(JSON.stringify(transaction), 400, $("#generateQrCodeHere1of2"));
                 self._QR.scanQR((value) => {
-                    //dummy sanity check
-                    let json = JSON.parse(value);
-                    return (json && json.data && json.signature);
+                    // sanity check
+                    if (value) {
+                        // check that the value is JSON with relevant fields
+                        let json = JSON.parse(value);
+                        return (json && json.data && json.signature);
+                    } else {
+                        // something is really wrong
+                        return false;
+                    }
                 }, (value) => {
-                    result = JSON.parse(value);
+                    // if value was provided then parse it into the result
+                    if (value) {
+                        result = JSON.parse(value);
+                    }
+                    // hide the dialog
                     dlg.modal("hide");
                 }, $('#performQrCodeScanHere2of2'));
                 return new Promise(function(resolve) {
