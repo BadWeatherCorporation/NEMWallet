@@ -34,37 +34,27 @@ If the circle next to `Node` is red, click on it and select another node from th
 
 <pre>npm install -g gulp-cli</pre>
 
-2) Open a console to the path of the NEM Wallet folder and install all the needed dependencies
+2) We are using yarn to install and resolve dependencies
 
-<pre>npm install</pre>
+<pre>npm install -g yarn</pre>
 
-Dependencies nem-voting and nem-trezor are using outdated version of nem-library. Also, browserify, for some reason, is generating a code which creates two instances of nem-library, causing problems during NEMLibrary.bootstrap. To work around these issues, we can install the nem-library of desired version globally and symlink it from respective node_modules locations.
+3) Open a console to the path of the NEM Wallet folder and install all the needed dependencies
 
-<pre>find . -type d -name nem-library -exec rm -rf {} \;</pre>
+<pre>yarn install</pre>
 
-<pre>npm install -g nem-library@1.0.9</pre>
-
-<pre>cd node_modules; npm link nem-library</pre>
-
-<pre>cd node_modules/nem-voting/node_modules; npm link nem-library</pre>
-
-<pre>cd node_modules/nem-trezor/node_modules; npm link nem-library</pre>
-
-It is a bit complicated - please propose a better solution if you know one.
-
-3) Build:
+4) Build:
 
 <pre>gulp</pre>
 
 ##### OR #####
 
-4) Run NEM Wallet as App (packaged with chromium browser)
+5) Run NEM Wallet as App (packaged with chromium browser)
 
 <pre>npm run devApp</pre>
 
 ##### OR #####
 
-5) Build NEM Wallet apps, default set to : win64,osx64,linux64
+6) Build NEM Wallet apps, default set to : win64,osx64,linux64
 
 <pre>gulp build-app</pre>
 
