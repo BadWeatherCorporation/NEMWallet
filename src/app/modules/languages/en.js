@@ -859,13 +859,13 @@ function EnglishProvider($translateProvider) {
 
         // NIS errors. see alert.service getTranslatedNisError for mapping of errors
         NIS_ERR_REQ_GET_UNSUPPORTED: 'The request was performed as GET request but was expected to be a POST request.',
-        NIS_ERR_ADDRESS_INVALID: 'At least one address supplied in the request was invalid. Addresses are validated before processing a request. If validation fails, an error containing this message is returned.',
+        NIS_ERR_ADDRESS_INVALID: 'At least one address supplied in the request was invalid.',// Addresses are validated before processing a request. If validation fails, an error containing this message is returned.
         NIS_ERR_FAILURE_SERVER_LIMIT: 'The number of accounts that are allowed to harvest on NIS was exceeded.',
         NIS_ERR_INVALID_JSON: 'A parameter is missing in the request.',
         NIS_ERR_FAILURE_UNKNOWN_ACCOUNT: 'The account specified in the request is not known.',
         NIS_ERR_BLOCK_NOT_FOUND: 'The block that was requested could not be found in the database.',
         NIS_ERR_NEGATIVE_HEIGHT: 'The block height supplied in a request was zero or negative. Block height must always be greater than zero.',
-        NIS_ERR_NETWORK_NOT_BOOTED: 'Most requests need the node that should answer the request to be already booted. If node is not booted yet, this error message will be returned.',
+        NIS_ERR_NETWORK_NOT_BOOTED: 'Node is not booted yet. Most requests need the node that should answer the request to be already booted.',
         NIS_ERR_FAILURE_PAST_DEADLINE: 'The deadline for the entity has already expired. The deadline must always lie in the future.',
         NIS_ERR_FAILURE_FUTURE_DEADLINE: 'The deadline lies too far in the future. Deadlines are only allowed to lie up to 24 hours in the future.',
         NIS_ERR_FAILURE_INSUFFICIENT_BALANCE: 'The account does not have enough funds.',
