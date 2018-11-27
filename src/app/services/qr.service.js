@@ -46,12 +46,13 @@ class QR {
     */
     generateQR(data, destination) {
         let code = kjua({
-            size: "310",
+            size: 1024,
             text: data,
             fill: '#000',
             quiet: 0,
-            ratio: 1,
         });
+        code.style.width = "90%";
+        code.style.height = "90%";
         this.generateDestination = destination;
         if (this.generateDestination) {
             this.generateDestination.html(code);
@@ -72,8 +73,7 @@ class QR {
         cvsElement.hidden = true;
 
         let videoElement = document.createElement('video');
-        videoElement.style.width = "300px";
-        videoElement.style.height = "300px";
+        videoElement.style.width = "90%";
         videoElement.style.margin = "10px";
 
         this.scanDestination.append(cvsElement);
@@ -83,7 +83,7 @@ class QR {
         this.canvasElement = document.getElementById("scanQrcodeCvs");
         this.canvas = this.canvasElement.getContext("2d");
 
-        navigator.mediaDevices.getUserMedia({ video: { width: 600, height: 600, facingMode: "environment" } }).then(function(stream) {
+        navigator.mediaDevices.getUserMedia({ video: { width: 9999, height: 9999, facingMode: "environment" } }).then(function(stream) {
             self.video.srcObject = stream;
             self.openedVideoStream = stream;
             self.video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
