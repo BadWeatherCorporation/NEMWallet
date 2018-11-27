@@ -115,9 +115,6 @@
               <span class="input-group-addon btn" ng-click="$ctrl.showQr === true ? $ctrl.showQr = false : $ctrl.showQr = true;" style="background-color:#444;color:#fff;cursor:pointer;border-left:1px solid #ccc;"><i class="fa fa-qrcode" ></i></span>
             </div>
           </fieldset>
-          <button class="btn btn-success" ng-show="$ctrl.selectedWallet.accounts[0].algo!=='viewonly'" type="submit" ng-disabled="$ctrl.okPressed || !$ctrl.common.password.length" ng-click="$ctrl.scanAndSign()">
-              {{ 'IMPORT_UNSIGNEDTX_QRCODE' | translate }}
-          </button>
           <button class="btn btn-success" ui-sref="app.offlineTransactionSend({signedTransaction: $ctrl.resultSafeTransaction})" ng-show="!$ctrl.showQr"><i class="fa fa-angle-double-right"></i> {{ 'OFFLINE_TX_RELEASE' | translate }}</button>
         </div>
       </div>
