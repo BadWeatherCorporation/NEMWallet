@@ -125,7 +125,7 @@ class Wallet {
             return false;
         }
         let wallet;
-        if(isNCC) {
+        if (isNCC) {
             // Parse NCC wallet
             wallet = JSON.parse(data);
         } else {
@@ -161,19 +161,19 @@ class Wallet {
             return false;
         }
         // Check if mainnet is disabled
-        if(wallet.accounts[0].network === nem.model.network.data.mainnet.id && this._AppConstants.mainnetDisabled) {
+        if (wallet.accounts[0].network === nem.model.network.data.mainnet.id && this._AppConstants.mainnetDisabled) {
             this._Alert.mainnetDisabled();
             return false;
         }
         // Check if mijinnet is disabled
-        if(wallet.accounts[0].network === nem.model.network.data.mijin.id && this._AppConstants.mijinDisabled) {
+        if (wallet.accounts[0].network === nem.model.network.data.mijin.id && this._AppConstants.mijinDisabled) {
             this._Alert.mijinDisabled();
             return false;
         }
         // Decrypt / generate and check primary 
         if (!this.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) return false;
         // Check if brain wallet pass seems weak
-        if(wallet.accounts[0].network === nem.model.network.data.mainnet.id && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
+        if (wallet.accounts[0].network === nem.model.network.data.mainnet.id && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
             this._Alert.brainWalletUpgrade();
         }
         // Set the wallet object in Wallet service
@@ -257,7 +257,7 @@ class Wallet {
         }
 
         // Step out if using HW wallet
-        if(common.isHW) return true;
+        if (common.isHW) return true;
 
         // Check the private key and address
         if (!nem.utils.helpers.isPrivateKeyValid(common.privateKey) || !nem.crypto.helpers.checkAddress(common.privateKey, net, acct.address)) {
@@ -305,21 +305,42 @@ class Wallet {
                     // hide the dialog
                     dlg.modal("hide");
                 }, $('#qrSignStep2'));
-                return new Promise(function(resolve) {
+                return new Promise(function (resolve) {
                     if (dlg) {
-                        dlg.modal("show").on("hide.bs.modal", function() {
+                        dlg.modal("show").on("hide.bs.modal", function () {
                             $(this).off('hide.bs.modal');
                             self._QR.stopScanQR();
                             if (result) {
-                                return nem.com.requests.transaction.announce(self.node, JSON.stringify(result));
+                                return nem.com.requests.transaction.announce(self.node, JSON.stringify(result)).then((res) => {
+                                    self._$timeout(() => {
+                                        // If res code >= 2, it's an error
+                                        if (res.code >= 2) {
+                                            self._Alert.transactionError(res.message);
+                                        } else {
+                                            self._Alert.transactionSuccess();
+                                            let audio = new Audio('vendors/ding.ogg');
+                                            audio.play();
+                                        }
+                                        return;
+                                    });
+                                }, (err) => {
+                                    self._$timeout(() => {
+                                        if (err.code < 0) {
+                                            self._Alert.connectionError();
+                                        } else {
+                                            self._Alert.transactionError('Failed: ' + err.data.message);
+                                        }
+                                        return;
+                                    });
+                                });
                             } else {
-                                resolve({code:2, message:(self._$filter('translate')('ALERT_QR_SIGNEDTX_IMPORT_FAIL'))});
+                                resolve({ code: 2, message: (self._$filter('translate')('ALERT_QR_SIGNEDTX_IMPORT_FAIL')) });
                             }
                         });
                     } else {
                         console.log("#generateQrModalDlg missing");
-                        resolve({code:2, message:"DOM element #generateQrModalDlg missing."});
-                    }                    
+                        resolve({ code: 2, message: "DOM element #generateQrModalDlg missing." });
+                    }
                 });
             }
         } else {
@@ -350,14 +371,14 @@ class Wallet {
                 return Promise.resolve(res);
             }
         },
-        (err) => {
-            if(err.code < 0) {
-                this._Alert.connectionError();
-            }  else {
-                this._Alert.transactionError('Failed: '+ err.data.message);
-            }
-            return Promise.reject('Failed: '+ err.data.message);
-        });
+            (err) => {
+                if (err.code < 0) {
+                    this._Alert.connectionError();
+                } else {
+                    this._Alert.transactionError('Failed: ' + err.data.message);
+                }
+                return Promise.reject('Failed: ' + err.data.message);
+            });
     }
 
     /**
@@ -369,7 +390,7 @@ class Wallet {
      */
     needsUpgrade(wallet) {
         if (!wallet) return false;
-        if (!wallet.accounts[0].child && wallet.accounts[0].algo!=='viewonly') return true;
+        if (!wallet.accounts[0].child && wallet.accounts[0].algo !== 'viewonly') return true;
         return false;
     }
 
@@ -408,10 +429,10 @@ class Wallet {
             _account.child = data.publicKey;
             return Promise.resolve(data);
         },
-        (err) => {
-            this._Alert.bip32GenerationFailed(err);
-            return Promise.reject(true);
-        });
+            (err) => {
+                this._Alert.bip32GenerationFailed(err);
+                return Promise.reject(true);
+            });
     }
 
     /**
@@ -423,22 +444,22 @@ class Wallet {
      * @return {Promise} - A resolved promise with true if success, or a rejected promise
      */
     upgrade(common, wallet) {
-         if (!common || !wallet) return Promise.reject(true);
+        if (!common || !wallet) return Promise.reject(true);
         return new Promise((resolve, reject) => {
             // Decrypt / generate and check primary
             if (!this.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) return reject(true);
             // Chain of promises
             let chain = (i) => {
                 if (i < Object.keys(wallet.accounts).length) {
-                    this.deriveRemote(common, wallet.accounts[i]).then((res)=> {
-                        if(i === Object.keys(wallet.accounts).length - 1) {
+                    this.deriveRemote(common, wallet.accounts[i]).then((res) => {
+                        if (i === Object.keys(wallet.accounts).length - 1) {
                             this._Alert.upgradeSuccess();
                             return resolve(true);
                         }
-                    }, 
-                    (err) => {
-                        return reject(true);
-                    }).then(chain.bind(null, i+1)); 
+                    },
+                        (err) => {
+                            return reject(true);
+                        }).then(chain.bind(null, i + 1));
                 }
             }
             // Start promises chain
@@ -495,9 +516,9 @@ class Wallet {
             return this.deriveRemote(common, newAccount).then((res) => {
                 return Promise.resolve(newAccount);
             },
-            (err) => {
-                return Promise.reject(true);
-            });
+                (err) => {
+                    return Promise.reject(true);
+                });
         });
     }
 
@@ -520,10 +541,10 @@ class Wallet {
 
             return Promise.resolve(true);
         },
-        (err) => {
-            this._Alert.bip32GenerationFailed(err);
-            return Promise.reject(true);
-        });
+            (err) => {
+                this._Alert.bip32GenerationFailed(err);
+                return Promise.reject(true);
+            });
     }
 
     /**
@@ -536,7 +557,7 @@ class Wallet {
      * @return {HTMLelement} - An HTML element to append in the view 
      */
     generateQR(common, wallet, destination) {
-        let wlt  = wallet || this.current;
+        let wlt = wallet || this.current;
         if (!this.decrypt(common, wlt.accounts[0], wlt.accounts[0].algo, wlt.accounts[0].network)) return false;
         // Encrypt private key for mobile apps
         let mobileKeys = nem.crypto.helpers.toMobileKey(common.password, common.privateKey);
@@ -573,7 +594,7 @@ class Wallet {
      */
     base64Encode(wallet) {
         // Wallet object string to word array
-        let wordArray = nem.crypto.js.enc.Utf8.parse(angular.toJson(wallet)); 
+        let wordArray = nem.crypto.js.enc.Utf8.parse(angular.toJson(wallet));
         // Word array to base64
         return nem.crypto.js.enc.Base64.stringify(wordArray);
     }
