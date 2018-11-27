@@ -203,7 +203,7 @@ class OfflineTransactionCreateCtrl {
             'signature': signature.toString()
         });
 
-        this._QR.generateQR(this.resultSafeTransaction, 300, $('#signedTransactionQR'));
+        this._QR.generateQR(this.resultSafeTransaction, $('#signedTransactionQR'));
 
         this.okPressed = false;
     }

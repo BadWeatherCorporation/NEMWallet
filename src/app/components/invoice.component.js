@@ -59,7 +59,7 @@ class InvoiceCtrl {
         this.invoiceData.data.msg = nem.utils.format.hexMessage(this.formData.message);
         this.invoiceString = JSON.stringify(this.invoiceData);
         // Generate the QR
-        this._QR.generateQR(this.invoiceString, 256, $('#invoiceQR'));
+        this._QR.generateQR(this.invoiceString, $('#invoiceQR'));
     }
 
 

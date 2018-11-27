@@ -67,7 +67,7 @@ class AccountCtrl {
     generateAccountInfoQR() {
         // Account info model for QR
         let QR = nem.model.objects.create("accountInfoQR")(this._Wallet.network === nem.model.network.data.testnet.id ? 1 : 2, 1, this._Wallet.currentAccount.address, this._Wallet.currentAccount.label);
-        this._QR.generateQR(JSON.stringify(QR), 256, $('#accountInfoQR'));
+        this._QR.generateQR(JSON.stringify(QR), $('#accountInfoQR'));
     }
 
     /**

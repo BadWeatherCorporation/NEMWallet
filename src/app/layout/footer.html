@@ -32,16 +32,16 @@
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal dialog used to generate QR and scan QR codes -->
 <div class="modal fade" id="generateQrModalDlg" tabindex="-1" role="dialog">
   <div id="scoped-content">
     <style type="text/css" scoped>
-        @media (min-width: 768px) {
-          .modal-xl {
-            width: 90%;
-            max-width:1200px;
-          }
+      @media (min-width: 768px) {
+        .modal-xl {
+          width: 90%;
+          max-width: 1200px;
         }
+      }
     </style>
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
@@ -50,18 +50,14 @@
           <h3 class="modal-title" id="gridSystemModalLabel">{{ 'EXPORT_IMPORT_QRCODE' | translate }}</h3>
         </div>
         <div class="modal-body">
-          <div class="row">
-          <div class="col-lg-12">
-            <div id="generateQrCodeHere" style="text-align:center"></div>
-          </div>
-          <div class="col-lg-12">
-            <div id="performQrCodeScanHere" style="text-align:center"></div>
-          </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <div id="generateQrCodeHere1of2" style="float:left"></div>
-              <div id="performQrCodeScanHere2of2" style = "float:right"></div>
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-6 text-center">
+                <div id="qrSignStep1of2"></div>
+              </div>
+              <div class="col-sm-6 text-center">
+                <div id="qrSignStep2of2"></div>
+              </div>
             </div>
           </div>
         </div>

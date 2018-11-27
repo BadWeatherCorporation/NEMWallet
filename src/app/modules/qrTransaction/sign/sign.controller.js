@@ -104,7 +104,7 @@ class QrTransactionSignCtrl {
             'signature': signature.toString()
         });
 
-        this._QR.generateQR(this.resultSafeTransaction, 300, $('#signedTransactionQR'));
+        this._QR.generateQR(this.resultSafeTransaction, $("#qrSignStep2of2"));
 
         this.okPressed = false;
     }
@@ -131,16 +131,15 @@ class QrTransactionSignCtrl {
             if (value) {
                 entity = JSON.parse(value);
             }
-            dlg.modal("hide");
-        });
+            //dlg.modal("hide");
+            self.create(entity);
+            self._$scope.$apply();
+        }, $("#qrSignStep1of2"), true);
         if (dlg) {
             dlg.modal("show").on("hide.bs.modal", function() {
                 $(this).off('hide.bs.modal');
+                // stop the scanning when dlg is closed
                 self._QR.stopScanQR();
-                if (entity) {
-                    self.create(entity);
-                    self._$scope.$apply();
-                }
             });
         }
      }

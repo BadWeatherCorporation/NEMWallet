@@ -44,15 +44,15 @@ class QR {
     /**
     * Generate QR image data
     */
-    generateQR(data, size, destination) {
+    generateQR(data, destination) {
         let code = kjua({
-            size: size || 256,
+            size: "310",
             text: data,
             fill: '#000',
             quiet: 0,
-            ratio: 2,
+            ratio: 1,
         });
-        this.generateDestination = destination || $("#generateQrCodeHere");
+        this.generateDestination = destination;
         if (this.generateDestination) {
             this.generateDestination.html(code);
         }
@@ -63,16 +63,18 @@ class QR {
     /**
      * scan qrcode image
      */
-    scanQR(acceptFn, callbackFn, destination) {
+    scanQR(acceptFn, callbackFn, destination, continueScanning) {
         this.scanStarted = true;
         let self = this;
-        this.scanDestination = destination ||  $('#performQrCodeScanHere');
+        this.scanDestination = destination;
         let cvsElement = document.createElement('canvas');
         cvsElement.id = "scanQrcodeCvs";
         cvsElement.hidden = true;
 
         let videoElement = document.createElement('video');
-        videoElement.style.width = "500px";
+        videoElement.style.width = "300px";
+        videoElement.style.height = "300px";
+        videoElement.style.margin = "10px";
 
         this.scanDestination.append(cvsElement);
         this.scanDestination.append(videoElement);
@@ -81,12 +83,12 @@ class QR {
         this.canvasElement = document.getElementById("scanQrcodeCvs");
         this.canvas = this.canvasElement.getContext("2d");
 
-        navigator.mediaDevices.getUserMedia({ video: { width: 9999, height: 9999, facingMode: "environment" } }).then(function(stream) {
+        navigator.mediaDevices.getUserMedia({ video: { width: 600, height: 600, facingMode: "environment" } }).then(function(stream) {
             self.video.srcObject = stream;
             self.openedVideoStream = stream;
             self.video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
             self.video.play();
-            self._continueDetectQR(acceptFn, callbackFn);
+            self._continueDetectQR(acceptFn, callbackFn, continueScanning);
         }).catch(function(err){
             console.error("Couldn't get camera.");
             self.stopScanQR();
@@ -97,17 +99,17 @@ class QR {
     /**
      * search qrcode in video realtime.
      */
-    _continueDetectQR (acceptFn, callbackFn) {
+    _continueDetectQR (acceptFn, callbackFn, continueScanning) {
         let self = this;
         self.continueDetectInterval = setInterval(() => {
-            self._tick(acceptFn, callbackFn);
+            self._tick(acceptFn, callbackFn, continueScanning);
         }, 1000/60);
     }
 
     /**
     * read qrcode
     */
-    _tick(acceptFn, callbackFn) {
+    _tick(acceptFn, callbackFn, continueScanning) {
         let self = this;
         if (self.video.readyState === self.video.HAVE_ENOUGH_DATA) {
             self.canvasElement.height = self.video.videoHeight;
@@ -121,7 +123,9 @@ class QR {
                 try {
                     console.log('success detect QR, close camera: ' + code.data);
                     //let data = JSON.parse(code.data)
-                    this.stopScanQR();
+                    if (!continueScanning) {
+                        this.stopScanQR();
+                    }
                     callbackFn(code.data);
                 } catch (err) {
                     console.log('continue to detect Qrcode...')

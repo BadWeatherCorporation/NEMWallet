@@ -283,7 +283,7 @@ class Wallet {
                 //wrong tx signer; now it is pubkey derived from zero pk => 462ee976890916e54fa825d26bdd0235f5eb5b6a143c199ab0ae5ee9328e08ce
                 //because it is derived from pk during preparing, and there is no pk in the common object; put  it here and fix it during signing 
                 transaction.signer = "";
-                self._QR.generateQR(JSON.stringify(transaction), 400, $("#generateQrCodeHere1of2"));
+                self._QR.generateQR(JSON.stringify(transaction), $("#qrSignStep1of2"));
                 self._QR.scanQR((value) => {
                     // sanity check
                     if (value) {
@@ -301,7 +301,7 @@ class Wallet {
                     }
                     // hide the dialog
                     dlg.modal("hide");
-                }, $('#performQrCodeScanHere2of2'));
+                }, $('#qrSignStep2of2'));
                 return new Promise(function(resolve) {
                     if (dlg) {
                         dlg.modal("show").on("hide.bs.modal", function() {
@@ -539,7 +539,7 @@ class Wallet {
         let mobileKeys = nem.crypto.helpers.toMobileKey(common.password, common.privateKey);
         // Create model
         let QR = nem.model.objects.create("walletQR")(this.network === nem.model.network.data.testnet.id ? 1 : 2, 3, this.current.name, mobileKeys.encrypted, mobileKeys.salt);
-        this._QR.generateQR(JSON.stringify(QR), 256, destination);
+        this._QR.generateQR(JSON.stringify(QR), destination);
     }
 
     /**
