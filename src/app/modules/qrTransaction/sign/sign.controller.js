@@ -8,7 +8,7 @@ class QrTransactionSignCtrl {
      *
      * @params {services} - Angular services to inject
      */
-    constructor(Wallet, Alert, DataStore, $state, $timeout, $localStorage, $scope, AddressBook, QR) {
+    constructor(Wallet, Alert, DataStore, $state, $timeout, $localStorage, $scope, $filter, AddressBook, QR) {
         'ngInject';
 
         //// Module dependencies region ////
@@ -23,6 +23,7 @@ class QrTransactionSignCtrl {
         this._AddressBook = AddressBook;
         this._QR = QR;
         this._$scope = $scope;
+        this._$filter = $filter;
         //// End dependencies region ////
 
         // Initialization
@@ -104,7 +105,7 @@ class QrTransactionSignCtrl {
             'signature': signature.toString()
         });
 
-        this._QR.generateQR(this.resultSafeTransaction, $("#qrSignStep2of2"));
+        this._QR.generateQR(this.resultSafeTransaction, $("#qrSignStep2"));
 
         this.okPressed = false;
     }
@@ -123,6 +124,9 @@ class QrTransactionSignCtrl {
         let dlg = $("#generateQrModalDlg");
         let self = this;
         let entity = undefined;
+        // set the titles
+        $("#qrSignTitle1").text(self._$filter('translate')('QRSIGN_SIGN_TITLE1'));
+        $("#qrSignTitle2").text(self._$filter('translate')('QRSIGN_SIGN_TITLE2'));
         self._QR.scanQR((value) => {
             let json = JSON.parse(value);
             //signer has to be empty!
@@ -134,7 +138,7 @@ class QrTransactionSignCtrl {
             //dlg.modal("hide");
             self.create(entity);
             self._$scope.$apply();
-        }, $("#qrSignStep1of2"), true);
+        }, $("#qrSignStep1"), true);
         if (dlg) {
             dlg.modal("show").on("hide.bs.modal", function() {
                 $(this).off('hide.bs.modal');

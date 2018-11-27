@@ -280,10 +280,13 @@ class Wallet {
                 let self = this;
                 let dlg = $("#generateQrModalDlg");
                 let result = undefined;
+                // set the titles
+                $("#qrSignTitle1").text(self._$filter('translate')('QRSIGN_SEND_TITLE1'));
+                $("#qrSignTitle2").text(self._$filter('translate')('QRSIGN_SEND_TITLE2'));
                 //wrong tx signer; now it is pubkey derived from zero pk => 462ee976890916e54fa825d26bdd0235f5eb5b6a143c199ab0ae5ee9328e08ce
                 //because it is derived from pk during preparing, and there is no pk in the common object; put  it here and fix it during signing 
                 transaction.signer = "";
-                self._QR.generateQR(JSON.stringify(transaction), $("#qrSignStep1of2"));
+                self._QR.generateQR(JSON.stringify(transaction), $("#qrSignStep1"));
                 self._QR.scanQR((value) => {
                     // sanity check
                     if (value) {
@@ -301,7 +304,7 @@ class Wallet {
                     }
                     // hide the dialog
                     dlg.modal("hide");
-                }, $('#qrSignStep2of2'));
+                }, $('#qrSignStep2'));
                 return new Promise(function(resolve) {
                     if (dlg) {
                         dlg.modal("show").on("hide.bs.modal", function() {

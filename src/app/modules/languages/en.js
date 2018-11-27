@@ -872,6 +872,10 @@ function EnglishProvider($translateProvider) {
         EXPORT_IMPORT_QRCODE: 'Transaction QR export/import',
         ALERT_QR_SIGNEDTX_IMPORT_FAIL: 'Failed to import signed transaction - NOT sent',
         IMPORT_UNSIGNEDTX_QRCODE: 'Import QR of any transaction to sign',
+        QRSIGN_SEND_TITLE1: 'First - scan this code by your cold wallet',
+        QRSIGN_SEND_TITLE2: 'Second - scan here the code from your cold wallet',
+        QRSIGN_SIGN_TITLE1: 'First - scan here the code from the hot wallet',
+        QRSIGN_SIGN_TITLE2: 'Second - scan this code by the hot wallet',
     });
 
 }
