@@ -7,7 +7,7 @@ class AccountCtrl {
      *
      * @params {services} - Angular services to inject
      */
-    constructor($localStorage, $location, Alert, Wallet, DataStore, $timeout, DataBridge, Trezor) {
+    constructor($localStorage, $location, Alert, Wallet, DataStore, $timeout, DataBridge, Trezor, QR) {
         'ngInject';
 
         //// Module dependencies region ////
@@ -20,6 +20,7 @@ class AccountCtrl {
         this._$timeout = $timeout;
         this._DataBridge = DataBridge;
         this._Trezor = Trezor;
+        this._QR = QR;
 
         //// End dependencies region ////
 
@@ -66,31 +67,17 @@ class AccountCtrl {
     generateAccountInfoQR() {
         // Account info model for QR
         let QR = nem.model.objects.create("accountInfoQR")(this._Wallet.network === nem.model.network.data.testnet.id ? 1 : 2, 1, this._Wallet.currentAccount.address, this._Wallet.currentAccount.label);
-        let code = kjua({
-            size: 256,
-            text: JSON.stringify(QR),
-            fill: '#000',
-            quiet: 0,
-            ratio: 2,
-        });
-        $('#accountInfoQR').html("");
-        $('#accountInfoQR').append(code);
-        return;
+        this._QR.generateQR(JSON.stringify(QR), $('#accountInfoQR'));
     }
 
     /**
      * Generate the mobile wallet QR
      */
     generateWalletQR() {
-        let QR = this._Wallet.generateQR(this.commonQR);
-        if(QR) {
-            $('#mobileWalletQR').html("");
-            $('#mobileWalletQR').append(QR);
-            // Hide the password input for export to mobile qr
-            this.showMobileQRPass = false;
-        }
+        this._Wallet.generateQR(this.commonQR, undefined, $('#mobileWalletQR'));
+        // Hide the password input for export to mobile qr
+        this.showMobileQRPass = false;
         this.reset();
-        return;
     }
 
     /**

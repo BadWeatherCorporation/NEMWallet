@@ -29,6 +29,7 @@ function EnglishProvider($translateProvider) {
         HEADER_PURGE_MESSAGE: 'Please confirm the purge of local storage. By clicking "Purge" all wallets in your browser local storage will be deleted and will not be recoverable. You agree that all wallets have been backed up and funds are secured.',
         HEADER_OFFLINE_TX: 'Prepare an offline transaction',
         HEADER_RELEASE_TX: 'Release a transaction',
+        HEADER_SIGN_QR_TX: 'Sign QR transaction',
 
         // FOOTER COMPONENT
         FOOTER_POWERED_BY_1: 'Powered by',
@@ -679,6 +680,7 @@ function EnglishProvider($translateProvider) {
         SIGNUP_CREATE_START_CONNECTION_WARNING: 'It is recommended to disconnect from internet while creating your wallet and backing up your data.',
         SIGNUP_CREATE_READY_BTN: 'Ready',
         SIGNUP_CREATE_ENTER_NAME: 'Enter a wallet name',
+        SIGNUP_CREATE_ENTER_ADDRESS: 'Enter an address',
         SIGNUP_CREATE_ENTER_PASSWORD: 'Enter a password',
         SIGNUP_CREATE_ENTER_PASSPHRASE: 'Enter a passphrase',
         SIGNUP_CREATE_CONFIRM_PASSWORD: 'Confirm above password',
@@ -785,6 +787,15 @@ function EnglishProvider($translateProvider) {
         TREZOR_TITLE: 'TREZOR',
         TREZOR_TEXT: 'The TREZOR hardware wallet allows you to secure your XEM, mosaics and multisig accounts',
         TREZOR_BUTTON: 'Login with TREZOR',
+
+        // VIEWONLY RELATED
+        SIGNUP_VIEWONLY_WALLET_TITLE: 'View only wallet',
+        SIGNUP_VIEWONLY_WALLET_INFO: 'View-only wallet doesn\'t store the private key at all. Operations involving private key (signing transactions, encrypting/decrypting messages) have to be delagated to another wallet.',
+        SIGNUP_VIEWONLY_WALLET_BUTTON: 'Create view only wallet',
+        SIGNUP_VIEWONLY_WALLET_WARNING: 'Note that operations involving private key (signing transactions, encrypting/decrypting messages) may not be suppoorted fully.',
+        ALERT_NOT_SUPPORTED_FOR_VIEWONLY_WALLET: 'Not supported for View-only wallet',
+        VIEWONLY_NOT_SUPPORTED: 'Not supported for View-only wallet.',
+
 
         // CREATE OFFLINE TRANSACTION MODULE
         OFFLINE_TX_TITLE: 'Prepare an offline transaction',
@@ -918,6 +929,15 @@ function EnglishProvider($translateProvider) {
         NIS_ERR_FAILURE_MOSAIC_INVALID_CREATION_FEE_SINK: 'Validation failed because the mosaic creation fee sink is invalid.',
         NIS_ERR_FAILURE_MOSAIC_INVALID_CREATION_FEE: 'Validation failed because the specified creation fee is invalid.',
         NIS_ERR_FAILURE_TOO_MANY_MOSAIC_TRANSFERS: 'Validation failed because a transfer transaction had too many attached mosaic transfers.',
+
+        // IMPORT EXPORT QR TX
+        EXPORT_IMPORT_QRCODE: 'Transaction QR export/import',
+        ALERT_QR_SIGNEDTX_IMPORT_FAIL: 'Failed to import signed transaction - NOT sent',
+        IMPORT_UNSIGNEDTX_QRCODE: 'Import QR of any transaction to sign',
+        QRSIGN_SEND_TITLE1: 'First - scan this code by your cold wallet',
+        QRSIGN_SEND_TITLE2: 'Second - scan here the code from your cold wallet',
+        QRSIGN_SIGN_TITLE1: 'First - scan here the code from the hot wallet',
+        QRSIGN_SIGN_TITLE2: 'Second - scan this code by the hot wallet',
     });
 
 }

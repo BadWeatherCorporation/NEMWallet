@@ -1,0 +1,83 @@
+<div class="transferTransaction-page">
+  <div class="container-fluid main">
+    <div class="row">
+      <div class="col-sm-8">
+        <h2>{{ 'OFFLINE_TX_TITLE' | translate }}</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 col-md-12">
+        <div class="panel-heading">
+          <div class="tabDescription">
+            <!-- Title of panel -->
+            <span ng-show="!$ctrl.formData.isMultisig">{{ 'TRANSFER_TRANSACTION_NAME' | translate }}</span>
+            <span ng-show="$ctrl.formData.isMultisig ">{{ 'TRANSFER_TRANSACTION_MULTISIG_NAME' | translate }}</span>
+          </div>
+          <!-- Tabbed modes -->
+          <ul class="nav nav-tabs"></ul>
+        </div>
+        <!-- Transaction form -->
+        <div class="panel-body" ng-if="$ctrl.selectedWallet">
+          <!-- Wallet select -->
+          <fieldset class="form-group">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <label>{{ 'LOGIN_SELECT_WALLET_YOURS' | translate }}:</label>
+              </span>
+              <select class="form-control" ng-model="$ctrl.selectedWallet" ng-options="wallet.name group by (wallet.accounts[0].network | toNetworkName) for wallet in $ctrl._storage.wallets" ng-change="$ctrl.setAccount();$ctrl.setContacts();">
+                <option value="" disabled selected>{{ 'LOGIN_SELECT_WALLET' | translate }}</option>
+              </select>
+            </div>
+          </fieldset>
+          <div ng-show="$ctrl.selectedWallet.accounts[0].algo!=='viewonly'">
+            <!--Account select -->
+            <fieldset class="form-group" ng-show="$ctrl.selectedWallet">
+              <div class="input-group">
+                <span class="input-group-btn">
+                  <label>{{ 'GENERAL_SELECT_ACCOUNT' | translate }}: </label>
+                </span>
+                <select class="form-control" ng-options="account as (account.label || account.address) for (index, account) in $ctrl.selectedWallet.accounts" ng-model="$ctrl.selectedAccount" ng-change="$ctrl.prepareTransaction();">
+                  <option value="" disabled selected>{{ 'GENERAL_SELECT_ACCOUNT' | translate }}</option>
+                </select>
+              </div>
+            </fieldset>
+            <!-- Password Field -->
+            <password-input common="$ctrl.common"></password-input>
+            <!-- Scan QR with wallet is available only for proper wallet -->
+            <button class="btn btn-success" ng-show="$ctrl.selectedWallet.accounts[0].algo!=='viewonly'" type="submit" ng-disabled="$ctrl.okPressed || !$ctrl.common.password.length" ng-click="$ctrl.scanAndSign()">
+              {{ 'IMPORT_UNSIGNEDTX_QRCODE' | translate }}
+            </button>
+          </div>
+        </div>
+        <div class="panel-body" ng-if="!$ctrl.selectedWallet">
+          <p><i class="fa fa-exclamation-triangle" ></i> {{ 'OFFLINE_TX_NO_WALLET' | translate }}</p>
+        </div>
+        <div class="panel-body" ng-if="$ctrl.selectedWallet && $ctrl.selectedWallet.accounts[0].algo==='viewonly'">
+            <p><i class="fa fa-exclamation-triangle" ></i> {{ 'VIEWONLY_NOT_SUPPORTED' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="connectionWarning" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body text-center" style="color:#444">
+        <img src="images/logomark.png" style="width: 125px;" />
+        <hr>
+        <p class="bg-danger"><i class="fa fa-exclamation-triangle"></i> <span ng-bind-html="'OFFLINE_TX_MODAL_ALERT' | translate"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'GENERAL_CLOSE' | translate }}</button>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -51,4 +51,8 @@ servicesModule.service('VotingUtils', VotingUtilsService);
 import VotingService from './voting.service';
 servicesModule.service('Voting', VotingService);
 
+// Set QR service
+import QRService from './qr.service';
+servicesModule.service('QR', QRService);
+
 export default servicesModule;

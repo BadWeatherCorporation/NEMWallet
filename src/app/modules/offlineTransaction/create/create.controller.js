@@ -8,7 +8,7 @@ class OfflineTransactionCreateCtrl {
      *
      * @params {services} - Angular services to inject
      */
-    constructor(Wallet, Alert, DataStore, $state, $timeout, $localStorage, AddressBook) {
+    constructor(Wallet, Alert, DataStore, $state, $timeout, $localStorage, AddressBook, QR) {
         'ngInject';
 
         //// Module dependencies region ////
@@ -21,7 +21,7 @@ class OfflineTransactionCreateCtrl {
         this._Helpers = Helpers;
         this._storage = $localStorage;
         this._AddressBook = AddressBook;
-
+        this._QR = QR;
         //// End dependencies region ////
 
         // Initialization
@@ -155,24 +155,6 @@ class OfflineTransactionCreateCtrl {
     }
 
     /**
-     * Generate a transaction QR
-     */
-    generateTransactionQR() {
-        // Account info model for QR
-        let code = kjua({
-            size: 300,
-            text: this.resultSafeTransaction,
-            fill: '#000',
-            quiet: 0,
-            ratio: 2,
-            ecLevel: 'L'
-        });
-        $('#signedTransactionQR').html("");
-        $('#signedTransactionQR').append(code);
-        return;
-}
-
-    /**
      * Create the signed transaction
      */
     create() {
@@ -208,7 +190,7 @@ class OfflineTransactionCreateCtrl {
             'signature': signature.toString()
         });
 
-        this.generateTransactionQR();
+        this._QR.generateQR(this.resultSafeTransaction, $('#signedTransactionQR'));
 
         this.okPressed = false;
     }

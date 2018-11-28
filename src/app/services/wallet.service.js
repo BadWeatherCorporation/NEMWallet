@@ -10,7 +10,7 @@ class Wallet {
      *
      * @params {services} - Angular services to inject
      */
-    constructor(AppConstants, $localStorage, Alert, $timeout, AddressBook, Trezor, DataStore) {
+    constructor(AppConstants, $localStorage, Alert, $timeout, AddressBook, Trezor, DataStore, QR, $filter) {
         'ngInject';
 
         //// Service dependencies region ////
@@ -22,6 +22,8 @@ class Wallet {
         this._AddressBook = AddressBook;
         this._Trezor = Trezor;
         this._DataStore = DataStore;
+        this._QR = QR;
+        this._$filter = $filter;
 
         //// End dependencies region ////
 
@@ -123,7 +125,7 @@ class Wallet {
             return false;
         }
         let wallet;
-        if(isNCC) {
+        if (isNCC) {
             // Parse NCC wallet
             wallet = JSON.parse(data);
         } else {
@@ -159,19 +161,19 @@ class Wallet {
             return false;
         }
         // Check if mainnet is disabled
-        if(wallet.accounts[0].network === nem.model.network.data.mainnet.id && this._AppConstants.mainnetDisabled) {
+        if (wallet.accounts[0].network === nem.model.network.data.mainnet.id && this._AppConstants.mainnetDisabled) {
             this._Alert.mainnetDisabled();
             return false;
         }
         // Check if mijinnet is disabled
-        if(wallet.accounts[0].network === nem.model.network.data.mijin.id && this._AppConstants.mijinDisabled) {
+        if (wallet.accounts[0].network === nem.model.network.data.mijin.id && this._AppConstants.mijinDisabled) {
             this._Alert.mijinDisabled();
             return false;
         }
         // Decrypt / generate and check primary 
         if (!this.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) return false;
         // Check if brain wallet pass seems weak
-        if(wallet.accounts[0].network === nem.model.network.data.mainnet.id && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
+        if (wallet.accounts[0].network === nem.model.network.data.mainnet.id && wallet.accounts[0].algo === 'pass:6k' && common.password.length < 40) {
             this._Alert.brainWalletUpgrade();
         }
         // Set the wallet object in Wallet service
@@ -242,13 +244,20 @@ class Wallet {
         let alg = algo || this.algo;
 
         // Try to generate or decrypt key
-        if (!nem.crypto.helpers.passwordToPrivatekey(common, acct, alg)) {
-            this._Alert.invalidPassword();
-            return false;
+        if (alg != 'viewonly') {
+            if (!common.password) {
+                this._Alert.invalidPassword();
+                return false;
+            } else if (!nem.crypto.helpers.passwordToPrivatekey(common, acct, alg)) {
+                this._Alert.invalidPassword();
+                return false;
+            }
+        } else {
+            common.isHW = true;
         }
 
         // Step out if using HW wallet
-        if(common.isHW) return true;
+        if (common.isHW) return true;
 
         // Check the private key and address
         if (!nem.utils.helpers.isPrivateKeyValid(common.privateKey) || !nem.crypto.helpers.checkAddress(common.privateKey, net, acct.address)) {
@@ -263,14 +272,81 @@ class Wallet {
         // HW wallet
         if (common.isHW) {
             // Serialize, sign and broadcast
-            if (this.algo == "trezor") {
+            if (this.algo == 'trezor') {
                 return this._Trezor.serialize(transaction, account).then((serialized) => {
                     return nem.com.requests.transaction.announce(this.node, JSON.stringify(serialized));
                 });
+            } else if (this.algo == 'viewonly') {
+                let self = this;
+                let dlg = $("#generateQrModalDlg");
+                let result = undefined;
+                // set the titles
+                $("#qrSignTitle1").text(self._$filter('translate')('QRSIGN_SEND_TITLE1'));
+                $("#qrSignTitle2").text(self._$filter('translate')('QRSIGN_SEND_TITLE2'));
+                //wrong tx signer; now it is pubkey derived from zero pk => 462ee976890916e54fa825d26bdd0235f5eb5b6a143c199ab0ae5ee9328e08ce
+                //because it is derived from pk during preparing, and there is no pk in the common object; put  it here and fix it during signing 
+                transaction.signer = "";
+                self._QR.generateQR(JSON.stringify(transaction), $("#qrSignStep1"));
+                self._QR.scanQR((value) => {
+                    // sanity check
+                    if (value) {
+                        // check that the value is JSON with relevant fields
+                        let json = JSON.parse(value);
+                        return (json && json.data && json.signature);
+                    } else {
+                        // something is really wrong
+                        return false;
+                    }
+                }, (value) => {
+                    // if value was provided then parse it into the result
+                    if (value) {
+                        result = JSON.parse(value);
+                    }
+                    // hide the dialog
+                    dlg.modal("hide");
+                }, $('#qrSignStep2'));
+                return new Promise(function (resolve) {
+                    if (dlg) {
+                        dlg.modal("show").on("hide.bs.modal", function () {
+                            $(this).off('hide.bs.modal');
+                            self._QR.stopScanQR();
+                            if (result) {
+                                return nem.com.requests.transaction.announce(self.node, JSON.stringify(result)).then((res) => {
+                                    self._$timeout(() => {
+                                        // If res code >= 2, it's an error
+                                        if (res.code >= 2) {
+                                            self._Alert.transactionError(res.message);
+                                        } else {
+                                            self._Alert.transactionSuccess();
+                                            let audio = new Audio('vendors/ding.ogg');
+                                            audio.play();
+                                        }
+                                        return;
+                                    });
+                                }, (err) => {
+                                    self._$timeout(() => {
+                                        if (err.code < 0) {
+                                            self._Alert.connectionError();
+                                        } else {
+                                            self._Alert.transactionError('Failed: ' + err.data.message);
+                                        }
+                                        return;
+                                    });
+                                });
+                            } else {
+                                resolve({ code: 2, message: (self._$filter('translate')('ALERT_QR_SIGNEDTX_IMPORT_FAIL')) });
+                            }
+                        });
+                    } else {
+                        console.log("#generateQrModalDlg missing");
+                        resolve({ code: 2, message: "DOM element #generateQrModalDlg missing." });
+                    }
+                });
             }
+        } else {
+            // Normal wallet
+            return nem.model.transactions.send(common, transaction, this.node);
         }
-        // Normal wallet
-        return nem.model.transactions.send(common, transaction, this.node);
     }
 
     /**
@@ -295,14 +371,14 @@ class Wallet {
                 return Promise.resolve(res);
             }
         },
-        (err) => {
-            if(err.code < 0) {
-                this._Alert.connectionError();
-            }  else {
-                this._Alert.transactionError('Failed: '+ err.data.message);
-            }
-            return Promise.reject('Failed: '+ err.data.message);
-        });
+            (err) => {
+                if (err.code < 0) {
+                    this._Alert.connectionError();
+                } else {
+                    this._Alert.transactionError('Failed: ' + err.data.message);
+                }
+                return Promise.reject('Failed: ' + err.data.message);
+            });
     }
 
     /**
@@ -314,7 +390,7 @@ class Wallet {
      */
     needsUpgrade(wallet) {
         if (!wallet) return false;
-        if (!wallet.accounts[0].child) return true;
+        if (!wallet.accounts[0].child && wallet.accounts[0].algo !== 'viewonly') return true;
         return false;
     }
 
@@ -323,7 +399,7 @@ class Wallet {
         if (!this.decrypt(common, account, algo, network)) return Promise.reject(true);
 
         if (common.isHW) {
-            if (algo == "trezor") {
+            if (algo == 'trezor') {
                 return this._Trezor.deriveRemote(account, network);
             } else {
                 return Promise.reject(true);
@@ -353,10 +429,10 @@ class Wallet {
             _account.child = data.publicKey;
             return Promise.resolve(data);
         },
-        (err) => {
-            this._Alert.bip32GenerationFailed(err);
-            return Promise.reject(true);
-        });
+            (err) => {
+                this._Alert.bip32GenerationFailed(err);
+                return Promise.reject(true);
+            });
     }
 
     /**
@@ -368,22 +444,22 @@ class Wallet {
      * @return {Promise} - A resolved promise with true if success, or a rejected promise
      */
     upgrade(common, wallet) {
-         if (!common || !wallet) return Promise.reject(true);
+        if (!common || !wallet) return Promise.reject(true);
         return new Promise((resolve, reject) => {
             // Decrypt / generate and check primary
             if (!this.decrypt(common, wallet.accounts[0], wallet.accounts[0].algo, wallet.accounts[0].network)) return reject(true);
             // Chain of promises
             let chain = (i) => {
                 if (i < Object.keys(wallet.accounts).length) {
-                    this.deriveRemote(common, wallet.accounts[i]).then((res)=> {
-                        if(i === Object.keys(wallet.accounts).length - 1) {
+                    this.deriveRemote(common, wallet.accounts[i]).then((res) => {
+                        if (i === Object.keys(wallet.accounts).length - 1) {
                             this._Alert.upgradeSuccess();
                             return resolve(true);
                         }
-                    }, 
-                    (err) => {
-                        return reject(true);
-                    }).then(chain.bind(null, i+1)); 
+                    },
+                        (err) => {
+                            return reject(true);
+                        }).then(chain.bind(null, i + 1));
                 }
             }
             // Start promises chain
@@ -417,7 +493,7 @@ class Wallet {
         if (!this.decrypt(common, primary, primary.algo, primary.network)) return Promise.reject(false);
 
         if (common.isHW) {
-            if (primary.algo == "trezor") {
+            if (primary.algo == 'trezor') {
                 return this._Trezor.createAccount(primary.network, newAccountIndex, label);
             } else {
                 return Promise.reject(true);
@@ -440,9 +516,9 @@ class Wallet {
             return this.deriveRemote(common, newAccount).then((res) => {
                 return Promise.resolve(newAccount);
             },
-            (err) => {
-                return Promise.reject(true);
-            });
+                (err) => {
+                    return Promise.reject(true);
+                });
         });
     }
 
@@ -465,10 +541,10 @@ class Wallet {
 
             return Promise.resolve(true);
         },
-        (err) => {
-            this._Alert.bip32GenerationFailed(err);
-            return Promise.reject(true);
-        });
+            (err) => {
+                this._Alert.bip32GenerationFailed(err);
+                return Promise.reject(true);
+            });
     }
 
     /**
@@ -476,24 +552,18 @@ class Wallet {
      *
      * @param {object} common - A common object
      * @param {object} wallet - A wallet object
+     * @param {object} destination - $("#whereToPutTheImage")
      *
      * @return {HTMLelement} - An HTML element to append in the view 
      */
-    generateQR(common, wallet) {
-        let wlt  = wallet || this.current;
+    generateQR(common, wallet, destination) {
+        let wlt = wallet || this.current;
         if (!this.decrypt(common, wlt.accounts[0], wlt.accounts[0].algo, wlt.accounts[0].network)) return false;
         // Encrypt private key for mobile apps
         let mobileKeys = nem.crypto.helpers.toMobileKey(common.password, common.privateKey);
         // Create model
         let QR = nem.model.objects.create("walletQR")(this.network === nem.model.network.data.testnet.id ? 1 : 2, 3, this.current.name, mobileKeys.encrypted, mobileKeys.salt);
-        let code = kjua({
-            size: 256,
-            text: JSON.stringify(QR),
-            fill: '#000',
-            quiet: 0,
-            ratio: 2,
-        });
-        return code;
+        this._QR.generateQR(JSON.stringify(QR), destination);
     }
 
     /**
@@ -524,7 +594,7 @@ class Wallet {
      */
     base64Encode(wallet) {
         // Wallet object string to word array
-        let wordArray = nem.crypto.js.enc.Utf8.parse(angular.toJson(wallet)); 
+        let wordArray = nem.crypto.js.enc.Utf8.parse(angular.toJson(wallet));
         // Word array to base64
         return nem.crypto.js.enc.Base64.stringify(wordArray);
     }

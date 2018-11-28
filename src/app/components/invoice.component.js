@@ -7,7 +7,7 @@ class InvoiceCtrl {
      *
      * @params {services} - Angular services to inject
      */
-    constructor(Wallet, $scope) {
+    constructor(Wallet, $scope, QR) {
         'ngInject';
 
         // Initialize when component is ready
@@ -16,6 +16,7 @@ class InvoiceCtrl {
             //// Component dependencies region ////
 
             this._Wallet = Wallet;
+            this._QR = QR;
 
             //// End dependencies region ////
 
@@ -47,20 +48,6 @@ class InvoiceCtrl {
     //// Component methods region ////
 
     /**
-     * Generate QR using kjua lib
-     */
-    generateQRCode(text) {
-        let qrCode = kjua({
-            size: 256,
-            text: text,
-            fill: '#000',
-            quiet: 0,
-            ratio: 2,
-        });
-        $('#invoiceQR').html(qrCode);
-    }
-
-    /**
      * Create the QR according to invoice data
      */
     updateInvoiceQR() {
@@ -72,7 +59,7 @@ class InvoiceCtrl {
         this.invoiceData.data.msg = nem.utils.format.hexMessage(this.formData.message);
         this.invoiceString = JSON.stringify(this.invoiceData);
         // Generate the QR
-        this.generateQRCode(this.invoiceString);
+        this._QR.generateQR(this.invoiceString, $('#invoiceQR'));
     }
 
 
