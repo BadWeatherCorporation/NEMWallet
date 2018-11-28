@@ -1,7 +1,8 @@
 # Changelog
 
 ## Version 2.3.4
-
+    - QR based Cold Wallet
+    - human readable server response codes
 
 ## Version 2.3.3
 
