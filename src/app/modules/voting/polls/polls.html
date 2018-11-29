@@ -181,7 +181,7 @@
                   <div class="col-md-7" ng-hide="$ctrl.loadingVote">
                     <div ng-hide="$ctrl.alreadyVoted || $ctrl.pollFinished">
                       <p><b><i class="fa fa-exclamation-triangle"></i> Voting has a fee of {{($ctrl.votingFee | fmtNemValue)[0]}}.{{($ctrl.votingFee | fmtNemValue)[1]}} XEM per option</b></p>
-                      <button class="btn btn-success pull-xs-left" type="submit" style="width:90%" ng-click="$ctrl.vote()" ng-disabled="$ctrl.voting || $ctrl.invalidVote || $ctrl.alreadyVoted > 0">Vote</button>
+                      <button class="btn btn-success pull-xs-left" type="submit" style="width:90%" ng-click="$ctrl.vote()" ng-disabled="$ctrl.voting || $ctrl.invalidVote || $ctrl.alreadyVoted > 0 || $ctrl._Wallet.algo === 'viewonly'">Vote</button>
                     </div>
                     <div ng-show="$ctrl.alreadyVoted === 2">
                       <p class="text-success">You have successfully Voted on this Poll</p>
