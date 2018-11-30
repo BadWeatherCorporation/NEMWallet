@@ -3,6 +3,9 @@
 ## Version 2.3.4
     - QR based Cold Wallet
     - human readable server response codes
+    - mosaic can be created directly as a levy of another mosaic
+    - fixed FAILURE_TIMESTAMP_TOO_FAR_IN_FUTURE for multisig transactions
+    - wrapping long lines in apostille certificates
 
 ## Version 2.3.3
 
