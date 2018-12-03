@@ -30,13 +30,13 @@ If the circle next to `Node` is red, click on it and select another node from th
 
 ### Build from source ###
 
-1) Install gulp
+1) Install gulp (requires admin rights)
 
 <pre>npm install -g gulp-cli</pre>
 
 2) Open a console to the path of the NEM Wallet folder and install all the needed dependencies
 
-<pre>npm install</pre>
+<pre>npm ci</pre>
 
 3) Build:
 
