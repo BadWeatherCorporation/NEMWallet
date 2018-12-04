@@ -41,17 +41,31 @@ class QrTransactionSignCtrl {
         // Get wallets from local storage or set an empty array
         this._storage.wallets = this._storage.wallets || [];
         if (this._storage.wallets.length) {
-            //
+            // register for cleanup on destroy
+            this.cleanUp(this._$scope, this._QR);
+            // pick the primary wallet as the selected one
             this.selectedWallet = this._storage.wallets[0];
             this.setAccount();
             this.setContacts();
             // Prevent user to click twice on send when already processing
             this.okPressed = false;
+            // indicate whether to display the scanner
+            this.isScanning = false;
+            // indicate whether to display the signed QR code
+            this.hasSignedQR = false;
             // Object to contain our password & private key data
             this.common = nem.model.objects.get("common");
             // signed transaction
             this.resultSafeTransaction = "";
         }
+    }
+
+    /** register scope listener to perform cleanup when controller is done */
+    cleanUp(scope, qrService) {
+        scope.$on('$destroy', function () {
+            console.log('Cleaning up after scanning');
+            qrService.stopScanQR();
+        });
     }
 
     /**
@@ -72,10 +86,7 @@ class QrTransactionSignCtrl {
     /**
      * Create the signed transaction
      */
-    create(entity) {
-        // Disable send button
-        this.okPressed = true;
-
+    sign(entity) {
         // Get account private key for preparation or return
         let primary = this.selectedWallet.accounts[0];
         if (!this._Wallet.decrypt(this.common, this.selectedAccount, primary.algo, primary.network)) return this.okPressed = false;
@@ -105,47 +116,61 @@ class QrTransactionSignCtrl {
             'signature': signature.toString()
         });
 
-        this._QR.generateQR(this.resultSafeTransaction, $("#qrSignStep2"));
+        this._QR.generateQR(this.resultSafeTransaction, $("#qrViewer"));
+        // inidcate that the signed QR code is available
+        this.hasSignedQR = true;
 
+        // re-enable the button for another scan
         this.okPressed = false;
     }
 
     /**
      * Import transaction data/entity from QR code
      */
-    scanAndSign() {
+    scanQR() {
+        // Disable send button
+        this.okPressed = true;
+        // double check for viewonly even though view does not allow this to happen
         let primary = this.selectedWallet.accounts[0];
         if (primary.algo === 'viewonly') {
             this.okPressed = false;
             this._Alert.notSupportedForViewOnlyWallet();
             return;
         }
-
-        let dlg = $("#generateQrModalDlg");
+        // display scanner for the QR from viewonly wallet
         let self = this;
-        let entity = undefined;
-        // set the titles
-        $("#qrSignTitle1").text(self._$filter('translate')('QRSIGN_SIGN_TITLE1'));
-        $("#qrSignTitle2").text(self._$filter('translate')('QRSIGN_SIGN_TITLE2'));
+        let scanner = $("#qrScanner");
         self._QR.scanQR((value) => {
+            // check that the scanned QR is as expected
             let json = JSON.parse(value);
-            //signer has to be empty!
             return json && json["type"] && json["version"] && !json["signer"] && json["timeStamp"] && json["deadline"];
         }, (value) => {
+            console.log("got callback with "+value);
+            // hide the scanner
+            self.isScanning = false;
+            // process the scanned value
             if (value) {
-                entity = JSON.parse(value);
+                console.log("signing");
+                self.sign(JSON.parse(value));
             }
-            //dlg.modal("hide");
-            self.create(entity);
             self._$scope.$apply();
-        }, $("#qrSignStep1"), true);
-        if (dlg) {
-            dlg.modal("show").on("hide.bs.modal", function() {
-                $(this).off('hide.bs.modal');
-                // stop the scanning when dlg is closed
-                self._QR.stopScanQR();
-            });
-        }
+        }, scanner);
+        // indicate that we are scanning
+        self.isScanning = true;
+     }
+
+     /**scan another QR code from view-only wallet */
+     scanAnother() {
+        this.hasSignedQR = false;
+        this.scanQR();
+     }
+
+     /** stop scanning if in progress and let user select another wallet/account */
+     changeAccount() {
+        this._QR.stopScanQR();
+        this.hasSignedQR = false;
+        this.isScanning = false;
+        this.okPressed = false;
      }
 
     //// End methods region ////
