@@ -53,6 +53,7 @@ class QR {
         });
         code.style.width = "90%";
         code.style.height = "90%";
+        code.alt = data;
         this.generateDestination = destination;
         if (this.generateDestination) {
             this.generateDestination.html(code);
