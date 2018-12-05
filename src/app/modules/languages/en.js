@@ -944,6 +944,7 @@ function EnglishProvider($translateProvider) {
         QRTX_SIGN_TITLE2: 'Scan this code by the view-only wallet',
         QRTX_SIGN_SCAN_ANOTHER: 'Sign another transaction',
         QRTX_SIGN_CHANGE_ACCOUNT: 'Use different wallet/account',
+        QRTX_SIGN_SIGNATURE_FOR: 'Signature for:',
 
     });
 

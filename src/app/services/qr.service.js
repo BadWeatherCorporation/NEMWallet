@@ -54,12 +54,11 @@ class QR {
         code.style.width = "90%";
         code.style.height = "90%";
         code.alt = data;
-        this.generateDestination = destination;
-        if (this.generateDestination) {
-            this.generateDestination.html(code);
+        if (destination) {
+            destination.html(code);
         }
-        //also, return generated img src
-        return code.src;
+        //also, return generated the element that got created
+        return code;
     }
 
     /**

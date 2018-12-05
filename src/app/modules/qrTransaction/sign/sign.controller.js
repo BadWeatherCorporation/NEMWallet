@@ -116,7 +116,8 @@ class QrTransactionSignCtrl {
             'signature': signature.toString()
         });
 
-        this._QR.generateQR(this.resultSafeTransaction, $("#qrViewer"));
+        let code = this._QR.generateQR(this.resultSafeTransaction, $("#qrViewer"));
+        code.title = this._$filter("translate")("QRTX_SIGN_SIGNATURE_FOR") + ' ' + JSON.stringify(entity);
         // inidcate that the signed QR code is available
         this.hasSignedQR = true;
 
