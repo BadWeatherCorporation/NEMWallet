@@ -22,6 +22,7 @@ filtersModule.filter('startFromUnc', Filters.startFromUnc);
 filtersModule.filter('reverse', Filters.reverse);
 filtersModule.filter('htmlSafe', Filters.htmlSafe);
 filtersModule.filter('toNetworkName', Filters.toNetworkName);
+filtersModule.filter('fmtWalletName', Filters.fmtWalletName);
 filtersModule.filter('toHostname', Filters.toHostname);
 filtersModule.filter('currencyFormat', Filters.currencyFormat);
 filtersModule.filter('btcFormat', Filters.btcFormat);

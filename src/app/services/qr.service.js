@@ -53,12 +53,12 @@ class QR {
         });
         code.style.width = "90%";
         code.style.height = "90%";
-        this.generateDestination = destination;
-        if (this.generateDestination) {
-            this.generateDestination.html(code);
+        code.alt = data;
+        if (destination) {
+            destination.html(code);
         }
-        //also, return generated img src
-        return code.src;
+        //also, return generated the element that got created
+        return code;
     }
 
     /**
@@ -103,7 +103,7 @@ class QR {
         let self = this;
         self.continueDetectInterval = setInterval(() => {
             self._tick(acceptFn, callbackFn, continueScanning);
-        }, 1000/60);
+        }, 1000);
     }
 
     /**
@@ -128,7 +128,8 @@ class QR {
                     }
                     callbackFn(code.data);
                 } catch (err) {
-                    console.log('continue to detect Qrcode...')
+                    console.log('continue to detect Qrcode...');
+                    console.log(err.stack);
                 }
             } else if (code) {
                 console.log("QR not accepted: " + code.data);

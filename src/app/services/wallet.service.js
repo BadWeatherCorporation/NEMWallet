@@ -281,8 +281,8 @@ class Wallet {
                 let dlg = $("#generateQrModalDlg");
                 let result = undefined;
                 // set the titles
-                $("#qrSignTitle1").text(self._$filter('translate')('QRSIGN_SEND_TITLE1'));
-                $("#qrSignTitle2").text(self._$filter('translate')('QRSIGN_SEND_TITLE2'));
+                $("#qrSignTitle1").text(self._$filter('translate')('QRTX_SEND_TITLE1'));
+                $("#qrSignTitle2").text(self._$filter('translate')('QRTX_SEND_TITLE2'));
                 //wrong tx signer; now it is pubkey derived from zero pk => 462ee976890916e54fa825d26bdd0235f5eb5b6a143c199ab0ae5ee9328e08ce
                 //because it is derived from pk during preparing, and there is no pk in the common object; put  it here and fix it during signing 
                 transaction.signer = "";
@@ -334,7 +334,7 @@ class Wallet {
                                     });
                                 });
                             } else {
-                                resolve({ code: 2, message: (self._$filter('translate')('ALERT_QR_SIGNEDTX_IMPORT_FAIL')) });
+                                resolve({ code: 2, message: (self._$filter('translate')('QRTX_ALERT_IMPORT_FAIL')) });
                             }
                         });
                     } else {
