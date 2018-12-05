@@ -14,7 +14,7 @@
               <span class="input-group-btn">
                 <p class="control-label">{{ 'LOGIN_SELECT_WALLET_YOURS' | translate }}: </p>
               </span>
-              <select class="form-control" ng-model="$ctrl.selectedWallet" ng-options="wallet.name group by (wallet.accounts[0].network | toNetworkName) for wallet in $ctrl._storage.wallets">
+              <select class="form-control" ng-model="$ctrl.selectedWallet" ng-options="(wallet | fmtWalletName) group by (wallet.accounts[0].network | toNetworkName) for wallet in $ctrl._storage.wallets">
                 <option value="" disabled selected>{{ 'LOGIN_SELECT_WALLET' | translate }}</option>
               </select>
             </div>
