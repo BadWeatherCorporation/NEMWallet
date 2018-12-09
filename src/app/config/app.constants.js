@@ -1,6 +1,6 @@
 const AppConstants = {
     //Application name
-    appName: 'NEM Wallet',
+    appName: 'NEM Cold Wallet',
 
     version: '2.3.4-alpha.1',
 
