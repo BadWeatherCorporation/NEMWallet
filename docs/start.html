@@ -62,46 +62,44 @@
 
         <div class="w3-row w3-padding-32" id="create">
             <div class="w3-container">
-                <p>NEM Cold Wallet is based on official <a href="https://github.com/NemProject/NanoWallet">NEM Wallet project</a> and focuses on providing 
+                <p>NEM Cold Wallet is based on the official <a href="https://github.com/NemProject/NanoWallet">NEM Wallet project</a> and focuses on providing 
                     increased security via the use of fully functional QR-based cold wallet.</p>
                 <h1 class="w3-text-teal">Create new wallet</h1>
-                <p>When you want to create new wallet simply click "sign-up" in the top-right corner.</p>
+                <p>When you want to create a new wallet simply click "sign-up" in the top-right corner.</p>
                 <h2 class="w3-text-teal">Simple wallet</h2>
-                <p>This type is fully functional wallet which allows you to use all features of the application.
-                    Wizzard will guide through the process
+                <p>Simple wallet is fully functional wallet which allows you to use all features of the application.
+                    Wizzard will guide you through the process
                     and private key will be generated.</p>
                 <div class="w3-panel w3-pale-red w3-display-container w3-border">
                     <h4>Security warning</h4>
-                    <p>Private key is for this wallet type stored on your computer encrypted by the password you
+                    <p>Private key for this wallet type is stored on your computer and it is encrypted by the password you
                         provided.
                         Use only on trusted and well-protected computers. Compromised computer will likely leak enough
-                        information
-                        that attacker will be able to make transactions from your account.
+                        information for the attacker to be able to make transactions from your account.
                     </p>
                 </div>
                 <h2 class="w3-text-teal">Private key wallet</h2>
-                <p>If you want to create wallet for private key which you already have then use this wallet type.
+                <p>If you want to create a wallet for a private key which you already have then use this wallet type.
                     Fully functional wallet will be created using this method.</p>
                 <div class="w3-panel w3-pale-red w3-display-container w3-border">
                     <h4>Security warning</h4>
-                    <p>Private key is for this wallet type stored on your computer encrypted by the password you
+                    <p>Private key for this wallet type is stored on your computer encrypted by the password you
                         provided.
                         Use only on trusted and well-protected computers. Compromised computer will likely leak enough
-                        information
-                        that attacker will be able to make transactions from your account.
+                        information for the attacker to be able to make transactions from your account.
                     </p>
                 </div>
                 <h2 class="w3-text-teal">View only wallet</h2>
-                <p>This wallet is created only by providing your NEM address. This is perfectly safe to be used on
+                <p>This wallet is created only by providing your NEM address. It is perfectly safe to use it on
                     untrusted computers
-                    because NEM address is public information and can not be used to transfer funds.</p>
+                    because NEM address is public information and can not be used to transfer funds without the private key.</p>
             </div>
         </div>
 
         <div class="w3-row w3-padding-64" id="cold-wallet">
             <div class="w3-container">
                 <h1 class="w3-text-teal">Use Cold Wallet</h1>
-                <p>Cold wallet is wallet which never comes online. As such it is perfectly safe because it can never
+                <p>Cold wallet is a wallet which never comes online. As such it is perfectly safe because it can never
                     leak
                     your private key
                     to the attacker. It can be used with offline simple or private key wallet and online view only
@@ -109,45 +107,46 @@
                 </p>
                 <div class="w3-panel w3-pale-red w3-display-container w3-border">
                     <h4>Never expose your private key</h4>
-                    <p>The only way to be 100% sure that your private key is safe is to never go online with it. The
-                        computer where
-                        you generate and store your private key can never get online.
+                    <p>The only way to be 100% sure that your private key is safe is to never go online with it. You
+                        have to make sure that the
+                        computer (or any other device) where
+                        you generate and store your private key will never go online.
                     </p>
                 </div>
                 <h2>Using the cold wallet</h2>
-                <p>To use cold wallet you need 2 devices (computer, phone, tables) with camera wunning NEM Cold Wallet
-                    application.
-                    One device needs to be online and have View only wallet created. The other needs to be always
-                    offline with simple or
-                    private key wallet created. We will call this offline wallet Cold wallet.
+                <p>To use cold wallet you need 2 devices (computer, phone, tablet) with camera running NEM Cold Wallet
+                    application. One online and the other one offline.
+                    On the online device, you need to create View only wallet using just your NEM address.
+                    The other device needs to be always offline. Create a simple or
+                    private key wallet on it. We will call this offline wallet Cold wallet.
                 </p>
                 <h3>Preparing the transaction</h3>
-                <p>Use view only wallet online to prepare the transaction that you want to make. This can be any
+                <p>Use the online View only wallet to prepare the transaction that you want to make. This can be any
                     transaction with mosaic or for multisig account.
                     When you press "Send" button you will be asked to provide access to your camera and dialog box will
                     be displayed with 2 parts:
                     <ul>
-                        <li>QR code representing the transaction you want to execute</li>
-                        <li>Camera scanner for the response from the cold wallet</li>
+                        <li>QR code representing the unsigned transaction you want to initiate</li>
+                        <li>Camera scanner for the signed response from the cold wallet</li>
                     </ul>
-                    Leave the dialog box open, you will get back to it using the scanner from the Cold wallet.
+                    Leave the dialog box open, you will get back to it once you export the QR with signed transaction from the Cold wallet.
                 </p>
                 <h3>Signing the transaction</h3>
-                <p>Use the Cold wallet (on offline device) to sign the transaction as follows:
+                <p>Use the Cold wallet (on the offline device) to sign the transaction as follows:
                     <ol>
                         <li>Start the application but do not log-in</li>
                         <li>Open the "Sign QR transaction" module in the page header section</li>
                         <li>Select account you want to use to sign the transaction and enter password</li>
                         <li>Click the "Import the QR of any transaction to sign" buton</li>
                         <li>You will be asked to allow access to the camera for the scanner</li>
-                        <li>Scan the QR code from the online device (created in previous section by view wallet)</li>
-                        <li>After code is scanned, camera scanner disappears and new QR code is displayed by the Cold
+                        <li>Scan the QR code from the online device (created in previous section by View only wallet)</li>
+                        <li>After the code is scanned, camera scanner disappears and new QR code with signed transaction is displayed by the Cold
                             wallet</li>
                     </ol>
                 </p>
                 <h3>Sending the transaction</h3>
                 <p>The QR code generated by the Cold wallet needs to be scanned back in the online View only wallet to
-                    submit the transaction.</p>
+                    submit the transaction to the NEM network.</p>
             </div>
         </div>
 
