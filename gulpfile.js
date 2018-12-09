@@ -110,6 +110,12 @@ gulp.task('package', function() {
       .pipe(gulp.dest('./build/'));
 });
 
+gulp.task('docs', function() {
+  return gulp.src('docs/**/*')
+    .on('error', interceptErrors)
+    .pipe(gulp.dest('./build/docs'))
+})
+
 // Cache template
 gulp.task('views', function() {
   return gulp.src(viewFiles)
@@ -143,9 +149,9 @@ gulp.task('app', function () {
   });
 
 // Run Tasks
-gulp.task('default', ['html', 'js', 'sass', 'css', 'images', 'package', 'browserify', 'tests', 'browserifyTests'], function() {
+gulp.task('default', ['html', 'js', 'sass', 'css', 'images', 'docs', 'package', 'browserify', 'tests', 'browserifyTests'], function() {
 });
 
 // Build packaged apps for production
-gulp.task('build-app', ['html', 'js', 'sass', 'css', 'images', 'package', 'app'], function() {
+gulp.task('build-app', ['html', 'js', 'sass', 'css', 'images', 'docs', 'package', 'app'], function() {
 });
