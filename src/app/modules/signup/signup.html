@@ -68,7 +68,10 @@
         </p>
       </div>
       <div ng-show="$ctrl.showInfo === 4">
-          <p> <span class="fa fa-info-circle" aria-hidden="true"></span> {{'SIGNUP_VIEWONLY_WALLET_INFO' | translate}}</p>
+          <p>
+            <span class="fa fa-info-circle" aria-hidden="true"></span>
+            <span ng-bind-html="'SIGNUP_VIEWONLY_WALLET_INFO' | translate"></span>
+          </p>
           <p>
             <i class="fa fa-exclamation-triangle"></i>
             <span ng-bind-html="'SIGNUP_VIEWONLY_WALLET_WARNING' | translate"></span>

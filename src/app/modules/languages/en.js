@@ -791,7 +791,7 @@ function EnglishProvider($translateProvider) {
 
         // VIEWONLY RELATED
         SIGNUP_VIEWONLY_WALLET_TITLE: 'View only wallet',
-        SIGNUP_VIEWONLY_WALLET_INFO: 'View-only wallet doesn\'t store the private key at all. Operations involving private key (signing transactions, encrypting/decrypting messages) have to be delagated to another wallet.',
+        SIGNUP_VIEWONLY_WALLET_INFO: 'View-only wallet doesn\'t store the private key at all. Operations involving private key (signing transactions, encrypting/decrypting messages) have to be delagated to another wallet. See <a target="_blank" href="docs/start.html">user guide</a> for details.',
         SIGNUP_VIEWONLY_WALLET_BUTTON: 'Create view only wallet',
         SIGNUP_VIEWONLY_WALLET_WARNING: 'Note that operations involving private key (signing transactions, encrypting/decrypting messages) may not be suppoorted fully.',
         ALERT_NOT_SUPPORTED_FOR_VIEWONLY_WALLET: 'Not supported for View-only wallet',
