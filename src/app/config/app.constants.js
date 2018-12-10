@@ -2,7 +2,7 @@ const AppConstants = {
     //Application name
     appName: 'NEM Cold Wallet',
 
-    version: '2.3.4-alpha.2',
+    version: '3.0.0',
 
     //Network
     defaultNetwork: 104,
