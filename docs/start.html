@@ -39,7 +39,7 @@
             <a class="w3-bar-item w3-button w3-right w3-hide-large w3-hover-white w3-large w3-theme-l1" href="javascript:void(0)"
                 onclick="w3_open()"><i class="fa fa-bars"></i></a>
             <a href="#" class="w3-bar-item w3-button w3-theme-l1"><img class="w3-bar-logo" src="images/nem-logo.ico"
-                    alt="NEM" /> NEM Cold Wallet</a>
+                    alt="NEM" /> NEM <b class="w3-text-blue">Cold Wallet</b></a>
             <a href="https://github.com/bad-weather-corp/NEMWallet" target="_blank" class="w3-bar-item w3-button w3-hide-small">Project</a>
             <a href="https://nem.io" target="_blank" class="w3-bar-item w3-button w3-hide-small">NEM.io</a>
         </div>
@@ -50,7 +50,7 @@
             title="Close Menu">
             <i class="fa fa-remove"></i>
         </a>
-        <h4 class="w3-bar-item"><b>Menu</b></h4>
+        <h4 class="w3-bar-item"><b class="w3-text-blue">Menu</b></h4>
         <a class="w3-bar-item w3-button w3-hover-black" href="#create">Create wallet</a>
         <a class="w3-bar-item w3-button w3-hover-black" href="#cold-wallet">Use Cold Wallet</a>
     </nav>
@@ -64,9 +64,9 @@
             <div class="w3-container">
                 <p>NEM Cold Wallet is based on the official <a href="https://github.com/NemProject/NanoWallet">NEM Wallet project</a> and focuses on providing 
                     increased security via the use of fully functional QR-based cold wallet.</p>
-                <h1 class="w3-text-teal">Create new wallet</h1>
+                <h1 class="w3-text-blue">Create new wallet</h1>
                 <p>When you want to create a new wallet simply click "sign-up" in the top-right corner.</p>
-                <h2 class="w3-text-teal">Simple wallet</h2>
+                <h2 class="w3-text-blue">Simple wallet</h2>
                 <p>Simple wallet is fully functional wallet which allows you to use all features of the application.
                     Wizzard will guide you through the process
                     and private key will be generated.</p>
@@ -78,7 +78,7 @@
                         information for the attacker to be able to make transactions from your account.
                     </p>
                 </div>
-                <h2 class="w3-text-teal">Private key wallet</h2>
+                <h2 class="w3-text-blue">Private key wallet</h2>
                 <p>If you want to create a wallet for a private key which you already have then use this wallet type.
                     Fully functional wallet will be created using this method.</p>
                 <div class="w3-panel w3-pale-red w3-display-container w3-border">
@@ -89,7 +89,7 @@
                         information for the attacker to be able to make transactions from your account.
                     </p>
                 </div>
-                <h2 class="w3-text-teal">View only wallet</h2>
+                <h2 class="w3-text-blue">View only wallet</h2>
                 <p>This wallet is created only by providing your NEM address. It is perfectly safe to use it on
                     untrusted computers
                     because NEM address is public information and can not be used to transfer funds without the private key.</p>
@@ -98,7 +98,7 @@
 
         <div class="w3-row w3-padding-64" id="cold-wallet">
             <div class="w3-container">
-                <h1 class="w3-text-teal">Use Cold Wallet</h1>
+                <h1 class="w3-text-blue">Use Cold Wallet</h1>
                 <p>Cold wallet is a wallet which never comes online. As such it is perfectly safe because it can never
                     leak
                     your private key
@@ -113,14 +113,14 @@
                         you generate and store your private key will never go online.
                     </p>
                 </div>
-                <h2>Using the cold wallet</h2>
+                <h2 class="w3-text-blue">Using the cold wallet</h2>
                 <p>To use cold wallet you need 2 devices (computer, phone, tablet) with camera running NEM Cold Wallet
                     application. One online and the other one offline.
                     On the online device, you need to create View only wallet using just your NEM address.
                     The other device needs to be always offline. Create a simple or
                     private key wallet on it. We will call this offline wallet Cold wallet.
                 </p>
-                <h3>Preparing the transaction</h3>
+                <h3 class="w3-text-blue">Preparing the transaction</h3>
                 <p>Use the online View only wallet to prepare the transaction that you want to make. This can be any
                     transaction with mosaic or for multisig account.
                     When you press "Send" button you will be asked to provide access to your camera and dialog box will
@@ -131,7 +131,7 @@
                     </ul>
                     Leave the dialog box open, you will get back to it once you export the QR with signed transaction from the Cold wallet.
                 </p>
-                <h3>Signing the transaction</h3>
+                <h3 class="w3-text-blue">Signing the transaction</h3>
                 <p>Use the Cold wallet (on the offline device) to sign the transaction as follows:
                     <ol>
                         <li>Start the application but do not log-in</li>
@@ -144,7 +144,7 @@
                             wallet</li>
                     </ol>
                 </p>
-                <h3>Sending the transaction</h3>
+                <h3 class="w3-text-blue">Sending the transaction</h3>
                 <p>The QR code generated by the Cold wallet needs to be scanned back in the online View only wallet to
                     submit the transaction to the NEM network.</p>
             </div>
