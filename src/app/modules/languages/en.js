@@ -5,7 +5,7 @@ function EnglishProvider($translateProvider) {
 
         // HEADER COMPONENT
         WALLET_NAME_1: 'NEM',
-        WALLET_NAME_2: 'Wallet',
+        WALLET_NAME_2: 'Cold Wallet',
         APP_NAME_SUB: 'The secure interface connecting to the NEM platform',
         HEADER_LOGIN_BUTTON: 'Login',
         HEADER_SIGNUP_BUTTON: 'Sign Up',
@@ -29,6 +29,7 @@ function EnglishProvider($translateProvider) {
         HEADER_PURGE_MESSAGE: 'Please confirm the purge of local storage. By clicking "Purge" all wallets in your browser local storage will be deleted and will not be recoverable. You agree that all wallets have been backed up and funds are secured.',
         HEADER_OFFLINE_TX: 'Prepare an offline transaction',
         HEADER_RELEASE_TX: 'Release a transaction',
+        HEADER_SIGN_QR_TX: 'Sign QR transaction',
 
         // FOOTER COMPONENT
         FOOTER_POWERED_BY_1: 'Powered by',
@@ -54,9 +55,9 @@ function EnglishProvider($translateProvider) {
         DASHBOARD_MARKET_INFO_CHANGES_24H: '24h',
         DASHBOARD_MARKET_INFO_CHANGES_7D: '7d',
         DASHBOARD_MARKET_INFO_NOTE: '<a href="http://coinmarketcap.com/" target="_blank">CoinMarketCap</a> data updated every 5 minutes',
-        DASHBOARD_NOTICE_1: 'Welcome to the NEM Wallet Beta!',
+        DASHBOARD_NOTICE_1: 'Welcome to the NEM Cold Wallet Beta!',
         DASHBOARD_NOTICE_2: 'Please <a href="https://github.com/bad-weather-corp/NEMWallet" target="_blank">report issues here</a>.',
-        DASHBOARD_NOTICE_3: 'The NEM Team suggests primarily testing on the testnet to familiarize yourself with NEM Wallet first before using the mainnet. A simple guide can be found <a href="https://blog.nem.io/nanowallet-tutorial/" target="_blank">here</a>. Users are responsible for their funds and having their private keys backed up. The NEM team is not responsible for any loss of funds due to using this app on the mainnet.',
+        DASHBOARD_NOTICE_3: 'The NEM Team suggests primarily testing on the testnet to familiarize yourself with NEM Cold Wallet first before using the mainnet. A simple guide can be found <a href="https://blog.nem.io/nanowallet-tutorial/" target="_blank">here</a>. Users are responsible for their funds and having their private keys backed up. The NEM team is not responsible for any loss of funds due to using this app on the mainnet.',
         DASHBOARD_NOTICE_4: 'We suggest writing down private keys on paper and storing it in a safe place. Additionally, you can import your accounts into the Android and iOS apps as a backup.',
         DASHBOARD_NOTICE_5: 'Thanks for your participation!',
         DASHBOARD_MORE_TXES: 'See more transactions',
@@ -168,7 +169,7 @@ function EnglishProvider($translateProvider) {
         GENERAL_VERIFY: 'Verify',
 
         // HOME MODULE
-        HOME_UNSUPPORTED_BROWSER: 'Sorry but you cannot use NEM Wallet safely with this browser...',
+        HOME_UNSUPPORTED_BROWSER: 'Sorry but you cannot use NEM Cold Wallet safely with this browser...',
         HOME_RECOMMENDED_BROWSERS: 'Recommended browsers are:',
         HOME_FEATURE_STAND_BY: 'Place the cursor on a feature to show information.',
         HOME_FEATURE_1: 'Send and receive XEM easily and almost instantly, only 1 minute block time!',
@@ -262,6 +263,7 @@ function EnglishProvider($translateProvider) {
         MOSAIC_DEFINITION_REQUIRES_LEVY: 'Requires levy',
         MOSAIC_DEFINITION_LEVY_LIMITATION: 'UI-limitation: right now, only owned mosaics can be used as a levy.',
         MOSAIC_DEFINITION_LEVY_SELECT_MOSAIC: 'Select levy mosaic',
+        MOSAIC_DEFINITION_LEVY_IS_NEW_MOSAIC: 'Use the new mosaic for levy',
         MOSAIC_DEFINITION_LEVY_ADDRESS: 'Levy address',
         MOSAIC_DEFINITION_LEVY_FEE_TYPE: 'Fee type',
         MOSAIC_DEFINITION_LEVY_FEE_TYPE_1: 'Absolute',
@@ -679,6 +681,7 @@ function EnglishProvider($translateProvider) {
         SIGNUP_CREATE_START_CONNECTION_WARNING: 'It is recommended to disconnect from internet while creating your wallet and backing up your data.',
         SIGNUP_CREATE_READY_BTN: 'Ready',
         SIGNUP_CREATE_ENTER_NAME: 'Enter a wallet name',
+        SIGNUP_CREATE_ENTER_ADDRESS: 'Enter an address',
         SIGNUP_CREATE_ENTER_PASSWORD: 'Enter a password',
         SIGNUP_CREATE_ENTER_PASSPHRASE: 'Enter a passphrase',
         SIGNUP_CREATE_CONFIRM_PASSWORD: 'Confirm above password',
@@ -709,14 +712,14 @@ function EnglishProvider($translateProvider) {
 
         // FAQ MODULE
         FAQ_TITLE: 'Frequently Asked Questions',
-        FAQ_QUESTION_1: 'How NEM Wallet works?',
-        FAQ_ANSWER_1: 'NEM Wallet is built with AngularJS and ES6. It is a full client-side application that never sends any sensitive data through the wire; everything happens in your browser from creating private keys to the signing of transactions.',
+        FAQ_QUESTION_1: 'How NEM Cold Wallet works?',
+        FAQ_ANSWER_1: 'NEM Cold Wallet is built with AngularJS and ES6. It is a full client-side application that never sends any sensitive data through the wire; everything happens in your browser from creating private keys to the signing of transactions.',
         FAQ_QUESTION_2: 'Is it free to use?',
         FAQ_ANSWER_2: 'Absolutely all operations are client-side, only you have control of your coins, no third parties, and no extra fees.',
         FAQ_QUESTION_3: 'Why do I already have one mosaic?',
         FAQ_ANSWER_3: 'Because XEM is the default currency of the NEM blockchain, every user already has it registered to their wallet, even if their balance is 0. Its namespace is NEM and the mosaic name is XEM',
         FAQ_QUESTION_4: 'Roadmap?',
-        FAQ_ANSWER_4: 'The current roadmap includes integration of all features from NEM Wallet v1.x.x and completion of community funded projects to work across this wallet.',
+        FAQ_ANSWER_4: 'The current roadmap includes integration of all features from NEM Cold Wallet v1.x.x and completion of community funded projects to work across this wallet.',
         FAQ_QUESTION_5: 'Can I get free XEM?',
         FAQ_ANSWER_5: 'The NEM faucet is currently down, but you can consult the NEM forum to know about the available bounties.',
         FAQ_QUESTION_6: 'Where to find more information about NEM?',
@@ -728,7 +731,7 @@ function EnglishProvider($translateProvider) {
         FAQ_QUESTION_8: 'Cosignatories cannot see the transaction to sign',
         FAQ_ANSWER_8: 'In this case go to "Services", look for "Multisignature and Multi-User Accounts" and click on "Sign multisig transactions".',
         FAQ_QUESTION_9: 'What are the best security practices ?',
-        FAQ_ANSWER_9: 'It is hightly recommended to always store private keys on paper.<br> You can print them and archive them somewhere safe. <br><br> Regarding wallet files you should always keep multiple copies on different cold locations, like usb sticks. <br> Passwords must always be unique and complex, for this reason, always write it down first. <br><br> When you want to check your wallet or realise operations:<br> - Plug the usb stick <br> - Import the wallet in NEM Wallet<br> - Unplug the usb stick.<br><br> A copy of your wallet is stored in the browser local storage for all the time you need.<br> Once you are done, logout and purge the wallets in local storage using the purge button on the right side of the footer.',
+        FAQ_ANSWER_9: 'It is hightly recommended to always store private keys on paper.<br> You can print them and archive them somewhere safe. <br><br> Regarding wallet files you should always keep multiple copies on different cold locations, like usb sticks. <br> Passwords must always be unique and complex, for this reason, always write it down first. <br><br> When you want to check your wallet or realise operations:<br> - Plug the usb stick <br> - Import the wallet in NEM Cold Wallet<br> - Unplug the usb stick.<br><br> A copy of your wallet is stored in the browser local storage for all the time you need.<br> Once you are done, logout and purge the wallets in local storage using the purge button on the right side of the footer.',
         FAQ_QUESTION_10: 'Where to find information about my account (address, etc) ?',
         FAQ_ANSWER_10: 'If you look at the top navigation bar, you will see an <b><i>"Account"</b></i> button between <b><i>"Node"</b></i> and <b><i>"Language"</b></i>. There you can find your address, public key, vested balance and other important data.',
         FAQ_QUESTION_11: 'I have deposited XEM to an exchange but nothing has been credited ?',
@@ -785,6 +788,15 @@ function EnglishProvider($translateProvider) {
         TREZOR_TITLE: 'TREZOR',
         TREZOR_TEXT: 'The TREZOR hardware wallet allows you to secure your XEM, mosaics and multisig accounts',
         TREZOR_BUTTON: 'Login with TREZOR',
+
+        // VIEWONLY RELATED
+        SIGNUP_VIEWONLY_WALLET_TITLE: 'View only wallet',
+        SIGNUP_VIEWONLY_WALLET_INFO: 'View-only wallet doesn\'t store the private key at all. Operations involving private key (signing transactions, encrypting/decrypting messages) have to be delagated to another wallet. See <a target="_blank" href="docs/start.html">user guide</a> for details.',
+        SIGNUP_VIEWONLY_WALLET_BUTTON: 'Create view only wallet',
+        SIGNUP_VIEWONLY_WALLET_WARNING: 'Note that operations involving private key (signing transactions, encrypting/decrypting messages) may not be suppoorted fully.',
+        ALERT_NOT_SUPPORTED_FOR_VIEWONLY_WALLET: 'Not supported for View-only wallet',
+        VIEWONLY_NOT_SUPPORTED: 'Not supported for View-only wallet.',
+
 
         // CREATE OFFLINE TRANSACTION MODULE
         OFFLINE_TX_TITLE: 'Prepare an offline transaction',
@@ -918,6 +930,22 @@ function EnglishProvider($translateProvider) {
         NIS_ERR_FAILURE_MOSAIC_INVALID_CREATION_FEE_SINK: 'Validation failed because the mosaic creation fee sink is invalid.',
         NIS_ERR_FAILURE_MOSAIC_INVALID_CREATION_FEE: 'Validation failed because the specified creation fee is invalid.',
         NIS_ERR_FAILURE_TOO_MANY_MOSAIC_TRANSFERS: 'Validation failed because a transfer transaction had too many attached mosaic transfers.',
+
+        // this will be removed
+        IMPORT_UNSIGNEDTX_QRCODE: 'Import QR of any transaction to sign',
+        // IMPORT EXPORT QR TX
+        QRTX_EXPORT_IMPORT: 'Transaction QR export/import',
+        QRTX_ALERT_IMPORT_FAIL: 'Failed to import signed transaction - NOT sent',
+        QRTX_SIGN_TITLE: 'Sign QR transaction',
+        QRTX_SIGN_PANEL_TITLE: 'Sign any transaction generated by View-only wallet',
+        QRTX_SEND_TITLE1: 'First - scan this code by your cold wallet',
+        QRTX_SEND_TITLE2: 'Second - scan here the code from your cold wallet',
+        QRTX_SIGN_TITLE1: 'Scan the code from the view-only wallet',
+        QRTX_SIGN_TITLE2: 'Scan this code by the view-only wallet',
+        QRTX_SIGN_SCAN_ANOTHER: 'Sign another transaction',
+        QRTX_SIGN_CHANGE_ACCOUNT: 'Use different wallet/account',
+        QRTX_SIGN_SIGNATURE_FOR: 'Signature for:',
+
     });
 
 }

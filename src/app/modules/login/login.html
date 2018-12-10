@@ -14,13 +14,13 @@
               <span class="input-group-btn">
                 <p class="control-label">{{ 'LOGIN_SELECT_WALLET_YOURS' | translate }}: </p>
               </span>
-              <select class="form-control" ng-model="$ctrl.selectedWallet" ng-options="wallet.name group by (wallet.accounts[0].network | toNetworkName) for wallet in $ctrl._storage.wallets">
+              <select class="form-control" ng-model="$ctrl.selectedWallet" ng-options="(wallet | fmtWalletName) group by (wallet.accounts[0].network | toNetworkName) for wallet in $ctrl._storage.wallets">
                 <option value="" disabled selected>{{ 'LOGIN_SELECT_WALLET' | translate }}</option>
               </select>
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" ng-show="$ctrl.selectedWallet && $ctrl.selectedWallet.accounts[0].algo !== 'viewonly'">
             <div class="input-group">
               <span class="input-group-btn">
                 <p>{{ 'FORM_PASSWORD' | translate }}: </p>
@@ -34,7 +34,7 @@
       <div class="row loginButtons">
         <div class="col-md-3 col-md-offset-3 col-sm-6">
           <button class="btn btn-lg btn-success btn-block"
-                type="submit" ng-click="$ctrl.login($ctrl.selectedWallet)" ng-disabled="!$ctrl.selectedWallet || !$ctrl.common.password.length">
+                type="submit" ng-click="$ctrl.login($ctrl.selectedWallet)" ng-disabled="!$ctrl.selectedWallet">
                 {{ 'LOGIN_LOGIN_BUTTON' | translate }}
           </button>
         </div>

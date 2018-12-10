@@ -579,7 +579,12 @@ export default class Alert {
         });
     }
 
-
+    notSupportedForViewOnlyWallet() {
+        this._ngToast.create({
+            content: this._$filter("translate")("ALERT_NOT_SUPPORTED_FOR_VIEWONLY_WALLET"),
+            className: 'danger'
+        });
+    }
     /***
      * Success alerts
      */

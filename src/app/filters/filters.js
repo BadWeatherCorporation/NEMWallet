@@ -218,6 +218,24 @@ let toNetworkName = function() {
 }
 
 /**
+ * Format wallet name togerther with indication of the wallet status
+ */
+let fmtWalletName = function() {
+    return function(wallet) {
+        let suffix;
+        let primary = wallet.accounts[0];
+        if (primary.algo === 'viewonly') {
+            suffix = 'view-only';
+        }
+        if (suffix) {
+            return `${wallet.name} (${suffix})`;
+        } else {
+            return wallet.name;
+        }
+    }
+}
+
+/**
 * Set a value to common currency format
 *
 * @param number: The number to format
@@ -329,5 +347,6 @@ module.exports = {
     currencyFormat,
     btcFormat,
     fmtContact,
-    toEndpoint
+    toEndpoint,
+    fmtWalletName
 }

@@ -107,7 +107,7 @@
                 </div>
               </div>
             </fieldset>
-            <fieldset class="form-group" ng-hide="$ctrl._Wallet.algo === 'trezor'">
+            <fieldset class="form-group" ng-hide="$ctrl._Wallet.algo === 'trezor' || $ctrl._Wallet.algo === 'viewonly'">
               <div class="input-group">
                 <span class="input-group-btn">
                   <label ng-class="$ctrl.issues.noPassword ? 'has-error' : ''">{{ 'FORM_PASSWORD' | translate }}:</label>
@@ -116,7 +116,7 @@
               </div>
             </fieldset>
             <!-- BUTTON -->
-            <button class="btn btn-success pull-xs-right" type="submit" style="width:100%" ng-click="$ctrl.create()" ng-disabled="$ctrl.creating || $ctrl.invalidData">Create</button>
+            <button class="btn btn-success pull-xs-right" type="submit" style="width:100%" ng-click="$ctrl.create()" ng-disabled="$ctrl.creating || $ctrl.invalidData || $ctrl._Wallet.algo === 'viewonly'">Create</button>
             <!-- SPINNER -->
             <div ng-show="$ctrl.creating">
               Creating...

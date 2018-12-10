@@ -164,6 +164,35 @@ class WalletBuilder {
     }
 
     /**
+     * Create a view only wallet object
+     * @param {*} walletName - A wallet name
+     * @param {*} walletAddress - A wallet address
+     * @param {*} network - A network id
+     */
+    createViewOnlyWallet(walletName, walletAddress, network) {
+        return new Promise((resolve, reject) => {
+            // Check parameters
+            if (!walletName || !walletAddress || !network) {
+                this._Alert.missingFormData();
+                return reject(true);
+            }
+            // Check the address
+            let addr = walletAddress.toUpperCase().replace(/-/g, '');
+            if (!(nem.model.address.isValid(addr) && nem.model.address.isFromNetwork(addr, network))) {
+                this._Alert.invalidAddress();
+                return reject(true);
+            }
+            // Check if wallet already loaded
+            if (Helpers.haveWallet(walletName, this._storage.wallets)) {
+                this._Alert.walletNameExists();
+                return reject(true);
+            }
+            // Create the wallet
+            return resolve(this.buildWallet(walletName, addr, true, 'viewonly', {}, network, ''));
+        });
+    }
+
+    /**
      * Create a wallet object
      *
      * @param {string} walletName - The wallet name

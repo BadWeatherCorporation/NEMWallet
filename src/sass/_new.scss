@@ -266,6 +266,7 @@ label {
   border-color: $blue;
   width: 100%;
   border-radius: 0px;
+  margin-bottom: $pad;
 }
 .btn-success:hover, .btn-success:active, .btn-success:focus {
   background-color: $blueLite !important;
@@ -565,7 +566,7 @@ input[type=checkbox]:checked + label:before {
   }
 }
 .brand-name-2 {
-  color: #177245;
+  color: #2196F3;
 }
 .navbar {
 	border:none;

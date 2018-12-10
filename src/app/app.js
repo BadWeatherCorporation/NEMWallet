@@ -49,6 +49,7 @@ import './modules/apostille';
 import './modules/exchanges';
 import './modules/explorer';
 import './modules/offlineTransaction';
+import './modules/qrTransaction';
 import './modules/voting';
 import './modules/invoice';
 import './modules/signedMessage';
@@ -101,6 +102,7 @@ const requires = [
     'app.accountsExplorer',
     'app.explorerNamespacesMosaics',
     'app.offlineTransactionCreate',
+    'app.qrTransactionSign',
     'app.offlineTransactionSend',
     'app.votingPolls',
     'app.votingCreatePoll',
