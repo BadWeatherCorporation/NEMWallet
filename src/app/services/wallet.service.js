@@ -312,26 +312,9 @@ class Wallet {
                             self._QR.stopScanQR();
                             if (result) {
                                 return nem.com.requests.transaction.announce(self.node, JSON.stringify(result)).then((res) => {
-                                    self._$timeout(() => {
-                                        // If res code >= 2, it's an error
-                                        if (res.code >= 2) {
-                                            self._Alert.transactionError(res.message);
-                                        } else {
-                                            self._Alert.transactionSuccess();
-                                            let audio = new Audio('vendors/ding.ogg');
-                                            audio.play();
-                                        }
-                                        return;
-                                    });
+                                    resolve(res);
                                 }, (err) => {
-                                    self._$timeout(() => {
-                                        if (err.code < 0) {
-                                            self._Alert.connectionError();
-                                        } else {
-                                            self._Alert.transactionError('Failed: ' + err.data.message);
-                                        }
-                                        return;
-                                    });
+                                    resolve(err);
                                 });
                             } else {
                                 resolve({ code: 2, message: (self._$filter('translate')('QRTX_ALERT_IMPORT_FAIL')) });
