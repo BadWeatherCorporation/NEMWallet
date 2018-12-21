@@ -1,6 +1,8 @@
 import nem from 'nem-sdk';
+import { CoolFactory } from 'cool-utils';
 import CryptoHelpers from '../utils/CryptoHelpers';
 import Helpers from '../utils/helpers';
+import { QRClientTransport } from 'cool-utils';
 
 /** Service storing wallet data and relative functions on user wallet. */
 class Wallet {
@@ -278,51 +280,34 @@ class Wallet {
                 });
             } else if (this.algo == 'viewonly') {
                 let self = this;
-                let dlg = $("#generateQrModalDlg");
-                let result = undefined;
+                transaction.signer = "";
+
+                const dlg = $("#generateQrModalDlg");
                 // set the titles
                 $("#qrSignTitle1").text(self._$filter('translate')('QRTX_SEND_TITLE1'));
                 $("#qrSignTitle2").text(self._$filter('translate')('QRTX_SEND_TITLE2'));
                 //wrong tx signer; now it is pubkey derived from zero pk => 462ee976890916e54fa825d26bdd0235f5eb5b6a143c199ab0ae5ee9328e08ce
                 //because it is derived from pk during preparing, and there is no pk in the common object; put  it here and fix it during signing 
                 transaction.signer = "";
-                // fix: de-hex message payload if it is present and set to be encrypted; nem-sdk (message.js) hexed it because "we" are isHW
-                if (transaction.message && transaction.message.type === 2 && transaction.message.payload) {
-                    transaction.message.payload = nem.utils.format.hexToUtf8(transaction.message.payload);
-                }
-                self._QR.generateQR(JSON.stringify(transaction), $("#qrSignStep1"));
-                self._QR.scanQR((value) => {
-                    // sanity check
-                    if (value) {
-                        // check that the value is JSON with relevant fields
-                        let json = JSON.parse(value);
-                        return (json && json.data && json.signature);
-                    } else {
-                        // something is really wrong
-                        return false;
-                    }
-                }, (value) => {
-                    // if value was provided then parse it into the result
-                    if (value) {
-                        result = JSON.parse(value);
-                    }
-                    // hide the dialog
-                    dlg.modal("hide");
-                }, $('#qrSignStep2'));
+                const qrClientTransport = new QRClientTransport($("#qrSignStep1"), $("#qrSignStep2"));
+                const iCoolStorage = CoolFactory.createCoolStorageProxy('nis1', 1, qrClientTransport);
                 return new Promise(function (resolve) {
                     if (dlg) {
                         dlg.modal("show").on("hide.bs.modal", function () {
                             $(this).off('hide.bs.modal');
-                            self._QR.stopScanQR();
-                            if (result) {
-                                return nem.com.requests.transaction.announce(self.node, JSON.stringify(result)).then((res) => {
-                                    resolve(res);
-                                }, (err) => {
-                                    resolve(err);
-                                });
-                            } else {
-                                resolve({ code: 2, message: (self._$filter('translate')('QRTX_ALERT_IMPORT_FAIL')) });
-                            }
+                            qrClientTransport.cleanup();
+                        });
+                        iCoolStorage.sign(transaction, {}).then(signed => {
+                            nem.com.requests.transaction.announce(self.node, JSON.stringify(signed)).then((res) => {
+                                resolve(res);
+                                dlg.modal("hide");
+                            }, (err) => {
+                                resolve(err);
+                                dlg.modal("hide");
+                            });
+                        }, error => {
+                            resolve({ code: 2, message: "Something wrong during signing." });
+                            dlg.modal("hide");
                         });
                     } else {
                         console.log("#generateQrModalDlg missing");
@@ -357,15 +342,14 @@ class Wallet {
                 this._Alert.transactionSuccess();
                 return Promise.resolve(res);
             }
-        },
-            (err) => {
-                if (err.code < 0) {
-                    this._Alert.connectionError();
-                } else {
-                    this._Alert.transactionError('Failed: ' + err.data.message);
-                }
-                return Promise.reject('Failed: ' + err.data.message);
-            });
+        }, (err) => {
+            if (err.code < 0) {
+                this._Alert.connectionError();
+            } else {
+                this._Alert.transactionError('Failed: ' + err.data.message);
+            }
+            return Promise.reject('Failed: ' + err.data.message);
+        });
     }
 
     /**
