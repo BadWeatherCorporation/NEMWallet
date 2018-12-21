@@ -286,6 +286,10 @@ class Wallet {
                 //wrong tx signer; now it is pubkey derived from zero pk => 462ee976890916e54fa825d26bdd0235f5eb5b6a143c199ab0ae5ee9328e08ce
                 //because it is derived from pk during preparing, and there is no pk in the common object; put  it here and fix it during signing 
                 transaction.signer = "";
+                // fix: de-hex message payload if it is present and set to be encrypted; nem-sdk (message.js) hexed it because "we" are isHW
+                if (transaction.message && transaction.message.type === 2 && transaction.message.payload) {
+                    transaction.message.payload = nem.utils.format.hexToUtf8(transaction.message.payload);
+                }
                 self._QR.generateQR(JSON.stringify(transaction), $("#qrSignStep1"));
                 self._QR.scanQR((value) => {
                     // sanity check
