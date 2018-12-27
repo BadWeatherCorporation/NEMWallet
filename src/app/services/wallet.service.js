@@ -1,8 +1,7 @@
 import nem from 'nem-sdk';
-import { CoolFactory } from 'cool-utils';
 import CryptoHelpers from '../utils/CryptoHelpers';
 import Helpers from '../utils/helpers';
-import { QRClientTransport } from 'cool-utils';
+import { CoolStorageFactory, CoolTransportFactory } from 'cool-utils';
 
 /** Service storing wallet data and relative functions on user wallet. */
 class Wallet {
@@ -289,8 +288,10 @@ class Wallet {
                 //wrong tx signer; now it is pubkey derived from zero pk => 462ee976890916e54fa825d26bdd0235f5eb5b6a143c199ab0ae5ee9328e08ce
                 //because it is derived from pk during preparing, and there is no pk in the common object; put  it here and fix it during signing 
                 transaction.signer = "";
-                const qrClientTransport = new QRClientTransport($("#qrSignStep1"), $("#qrSignStep2"));
-                const iCoolStorage = CoolFactory.createCoolStorageProxy('nis1', 1, qrClientTransport);
+                const iCoolStorage = CoolStorageFactory.createCoolStorageProxy('nis1');
+                const qrClientTransport = CoolTransportFactory.createClientTransport('qr', iCoolStorage);
+                qrClientTransport.setDestinations($("#qrSignStep1"), $("#qrSignStep2"));
+                iCoolStorage.setTransport(qrClientTransport);
                 return new Promise(function (resolve) {
                     if (dlg) {
                         dlg.modal("show").on("hide.bs.modal", function () {
@@ -299,15 +300,15 @@ class Wallet {
                         });
                         iCoolStorage.sign(transaction, {}).then(signed => {
                             nem.com.requests.transaction.announce(self.node, JSON.stringify(signed)).then((res) => {
+                                dlg.modal("hide");
                                 resolve(res);
-                                dlg.modal("hide");
                             }, (err) => {
-                                resolve(err);
                                 dlg.modal("hide");
+                                resolve(err);
                             });
                         }, error => {
-                            resolve({ code: 2, message: "Something wrong during signing." });
                             dlg.modal("hide");
+                            resolve({ code: 2, message: "Something wrong during signing: " + error });
                         });
                     } else {
                         console.log("#generateQrModalDlg missing");

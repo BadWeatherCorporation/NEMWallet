@@ -30,6 +30,8 @@ If the circle next to `Node` is red, click on it and select another node from th
 
 ### Build from source ###
 
+0) (Don't run npm install while your project is open in VS Code; it may fail spectacularly)
+
 1) Install gulp (requires admin rights)
 
 <pre>npm install -g gulp-cli</pre>

@@ -1,6 +1,6 @@
 import nem from 'nem-sdk';
 import Helpers from '../../../utils/helpers';
-import { QRServerTransport, QR } from "cool-utils";
+import { CoolStorageFactory, CoolTransportFactory } from 'cool-utils';
 
 class QrTransactionSignCtrl {
 
@@ -96,14 +96,20 @@ class QrTransactionSignCtrl {
             this._Alert.notSupportedForViewOnlyWallet();
             return;
         }
-        if (! this.server) {
-            this.server = new QRServerTransport($("#qrScanner"));
+        if (! this.coolStorage) {
+            this.coolStorage = CoolStorageFactory.createCoolStorage('nis1');
+        } else {
+            this.coolStorage.reset();
         }
-        this.server.setWallet(this.selectedWallet, this.common.password);
+        this.coolStorage.addWallet(this.selectedWallet, this.common.password);
+        if (! this.server) {
+            const qrClientTransport = CoolTransportFactory.createServerTransport('qr', this.coolStorage);
+            qrClientTransport.setDestinations($("#qrViewer"), $("#qrScanner"));
+            this.server = qrClientTransport;
+        }
         this.server.handleRequest().then(message => {
             self.isScanning = false;
-            let code = QR.generateQR(message, $("#qrViewer"));
-            code.title = this._$filter("translate")("QRTX_SIGN_SIGNATURE_FOR") + ' ' + JSON.stringify(message.payload);
+            $("#qrViewer").children('img').attr('title', this._$filter("translate")("QRTX_SIGN_SIGNATURE_FOR") + ' ' + JSON.stringify(message.payload));
 
             // inidcate that the signed QR code is available
             this.hasSignedQR = true;
@@ -118,21 +124,22 @@ class QrTransactionSignCtrl {
 
         // indicate that we are scanning
         this.isScanning = true;
-     }
+    }
 
-     /**scan another QR code from view-only wallet */
-     scanAnother() {
+    /**scan another QR code from view-only wallet */
+    scanAnother() {
         this.hasSignedQR = false;
         this.scanQR();
-     }
+    }
 
-     /** stop scanning if in progress and let user select another wallet/account */
-     changeAccount() {
+    /** stop scanning if in progress and let user select another wallet/account */
+    changeAccount() {
+        this.coolStorage.reset();
         this.server.cleanup();
         this.hasSignedQR = false;
         this.isScanning = false;
         this.okPressed = false;
-     }
+    }
 
     //// End methods region ////
 
