@@ -38,15 +38,15 @@
               <li ng-class="{ active: $ctrl.isTabSet(3) }">
                 <a ng-click="$ctrl.setTab(3)">Ended</a>
               </li>
-              <li ng-class="{ active: $ctrl.isTabSet (4) }">
-                <a ng-click="$ctrl.setTab(4)">Options</a>
+              <li ng-class="{ active: $ctrl.isTabSet (4) }" ng-show="$ctrl.isMainnet">
+                <a ng-click="$ctrl.setTab(4)">Official</a>
               </li>
             </ul>
           </div>
           <div class="panel-body">
             <br>
             <!-- LIST -->
-            <div ng-hide="$ctrl.isTabSet(4)">
+            <div ng-hide="$ctrl.isTabSet(5)">
               <div class="pre-scrollable">
                 <div ng-repeat="poll in $ctrl.pollsList track by $index">
                   <div class="poll-list-element">
@@ -58,7 +58,7 @@
               <button type="submit" class="btn btn-success pull-xs-left" ng-click="$ctrl.getPolls();" ng-disabled="$ctrl.loadingPolls"><i ng-class="$ctrl.loadingPolls ? 'fa fa-refresh fa-spin' : 'fa fa-refresh'" aria-hidden="true"></i> <span ng-show="$ctrl.loadingPolls">Loading</span> <span ng-show="!$ctrl.loadingPolls">Refresh</span></button>
             </div>
             <!-- OPTIONS TAB -->
-            <div ng-show="$ctrl.isTabSet(4)">
+            <div ng-show="$ctrl.isTabSet(5)">
               <!-- only votable -->
               <input id="box1" type="checkbox" ng-model="$ctrl.onlyVotable" ng-click="$ctrl.updateList()"><label for="box1">Show only polls you can vote on</label>
               <!-- Index / Poll Address Input -->
@@ -127,7 +127,7 @@
                 <span class="input-group-btn">
                   <label for="namespaceParent" class="control-label">{{ 'GENERAL_ACCOUNT' | translate }}:</label>
                 </span>
-                <select class="form-control" ng-options="acc.address for acc in $ctrl._DataStore.account.metaData.meta.cosignatoryOf track by acc.address" ng-model="$ctrl.multisigAccount" ng-change="$ctrl.checkHasVoted()"></select>
+                <select class="form-control" ng-options="acc.address for acc in $ctrl._DataStore.account.metaData.meta.cosignatoryOf track by acc.address" ng-model="$ctrl.multisigAccount" ng-change="$ctrl.checkHasVoted(); $ctrl.checkValidVote()"></select>
               </div>
             </fieldset>
             <!-- VOTE -->
@@ -141,7 +141,7 @@
                 <ul class="list-group">
                   <div ng-repeat="option in $ctrl.selectedPoll.options.strings track by $index">
                     <li class="list-group-item">
-                      <input id="{{option}}" type="checkbox" ng-click="$ctrl.toggleSelection($index); $ctrl.checkValidVote()"><label for="{{option}}" ng-disabled="$ctrl.voting || $ctrl.alreadyVoted > 0">{{option}}</label>
+                      <input id="{{option}}" type="checkbox" ng-checked="$ctrl.isSelected($index)" ng-click="$ctrl.toggleSelection($index); $ctrl.checkValidVote()"><label for="{{option}}" ng-disabled="$ctrl.voting || $ctrl.alreadyVoted > 0">{{option}}</label>
                     </li>
                   </div>
                   <br>
@@ -166,7 +166,7 @@
                 </ul>
               </div>
               <!-- Password and buttons -->
-              <div class="col-md-6" ng-hide="$ctrl.alreadyVoted > 0 || $ctrl.loadingVote || $ctrl.pollFinished || $ctrl._Wallet.algo === 'trezor' || $ctrl._Wallet.algo === 'viewonly'">
+              <div class="col-md-6" ng-hide="$ctrl.alreadyVoted > 0 || $ctrl.loadingVote || $ctrl.pollFinished || $ctrl._Wallet.algo === 'trezor' || $ctrl.notInWhitelist || $ctrl._Wallet.algo === 'viewonly'">
                 <fieldset class="form-group">
                   <div class="input-group">
                     <span class="input-group-btn">
@@ -179,18 +179,21 @@
               <div class="container-fluid">
                 <div class="row">
                   <div class="col-md-7" ng-hide="$ctrl.loadingVote">
-                    <div ng-hide="$ctrl.alreadyVoted || $ctrl.pollFinished">
+                    <div ng-hide="$ctrl.alreadyVoted || $ctrl.pollFinished || $ctrl.notInWhitelist">
                       <p><b><i class="fa fa-exclamation-triangle"></i> Voting has a fee of {{($ctrl.votingFee | fmtNemValue)[0]}}.{{($ctrl.votingFee | fmtNemValue)[1]}} XEM per option</b></p>
                       <button class="btn btn-success pull-xs-left" type="submit" style="width:90%" ng-click="$ctrl.vote()" ng-disabled="$ctrl.voting || $ctrl.invalidVote || $ctrl.alreadyVoted > 0 || $ctrl._Wallet.algo === 'viewonly'">Vote</button>
                     </div>
+                    <div ng-show="$ctrl.notInWhitelist">
+                      <p class="bg-danger">You are not on the whitelist</p>
+                    </div>
                     <div ng-show="$ctrl.alreadyVoted === 2">
-                      <p class="text-success">You have successfully Voted on this Poll</p>
+                      <p class="bg-success">You have successfully Voted on this Poll</p>
                     </div>
                     <div ng-show="$ctrl.alreadyVoted === 1">
-                      <p class="text-warning">You have an unconfirmed Vote on this Poll</p>
+                      <p class="bg-warning">You have an unconfirmed Vote on this Poll</p>
                     </div>
                     <div ng-show="$ctrl.pollFinished">
-                      <p class="text-danger">This poll has ended</p>
+                      <p class="bg-danger">This poll has ended</p>
                     </div>
                   </div>
                 </div>

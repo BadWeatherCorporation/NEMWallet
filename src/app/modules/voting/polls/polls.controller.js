@@ -44,6 +44,8 @@ class pollsCtrl {
             this.defaultIndexAccount = "NAZN26HYB7C5HVYVJ4SL3KBTDT773NZBAOMGRFZB";
         }
 
+        this.isMainnet = this._Wallet.network > 0;
+
         this.pollIndexAccount = this.defaultIndexAccount;
 
         this.pollIndexPrivate = false;
@@ -74,13 +76,14 @@ class pollsCtrl {
         this.createIndex = false;
 
         this.tab = 1;  //selected tab
-        this.onlyVotable = true;  //if true only votable polls appear in index
+        this.onlyVotable = false;  //if true only votable polls appear in index
 
         // Issues for not being able to vote
         this.issues = [];
         this.invalidVote = true;
         this.alreadyVoted = 0;
         this.pollFinished = false;
+        this.notInWhitelist = false;
 
         // To lock our send button if a transaction is not finished processing
         this.voting = false;
@@ -160,27 +163,24 @@ class pollsCtrl {
         let votes = [];
         for (var i = 0; i < optionAddresses.length; i++) {
             if (this.multisigVote) {
-                votes.push(this._Voting.vote(this.currentPollAddress, optionStrings[i], this.common, this.multisigAccount).then((data) => {
-                    this._$timeout(() => {
-                        this.alreadyVoted = 1;
-                        this.voting = false;
-                    });
-                }));
+                votes.push(this._Voting.vote(this.currentPollAddress, optionStrings[i], this.common, this.multisigAccount));
             } else {
-                votes.push(this._Voting.vote(this.currentPollAddress, optionStrings[i], this.common).then((data) => {
-                    this._$timeout(() => {
-                        this.alreadyVoted = 1;
-                        this.voting = false;
-                    });
-                }));
+                votes.push(this._Voting.vote(this.currentPollAddress, optionStrings[i], this.common));
             }
         }
-        Promise.all(votes).then((d) => {
+        Promise.all(votes).then(transactions => {
+            return this._Voting.broadcastVotes(transactions, this.common);
+        }).then((d) => {
             this._$timeout(() => {
+                this.voting = false;
+                this.alreadyVoted = 1;
                 this._Alert.votingSuccess();
                 this.common.password = '';
+                this.selectedOption = "";  // for single choice
+                this.selectedOptions = [];  // for multiple choice
             });
         }, (e)=>{
+            console.log("error", e);
             this._$timeout(() => {
                 this.voting = false;
                 this.common.password = '';
@@ -297,7 +297,12 @@ class pollsCtrl {
         if (this.selectedPoll.formData.type === 1) {
             if (!this.isVotable(this.selectedPoll)) {
                 issueList.push("You are not on the Whitelist");
+                this.notInWhitelist = true;
+            } else {
+                this.notInWhitelist = false;
             }
+        } else {
+            this.notInWhitelist = false;
         }
         //mosaic
         if (this.selectedPoll.formData.type === 2) {
@@ -329,8 +334,16 @@ class pollsCtrl {
         }
     }
 
+    // For option selection
+    isSelected(index) {
+        var idx = this.selectedOptions.indexOf(index);
+        // Is currently selected
+        return (idx > -1);
+    }
+
     // Gets the details and results of a poll by address
     getPoll(address){
+        console.log("loading poll", address);
         this.loadingPoll = true;
         this.loadingResults = true;
 
@@ -394,6 +407,8 @@ class pollsCtrl {
         this.getPoll(this.pollsList[index].address).then(()=>{
             this._$timeout(() => {
                 this.loadingAddressError = false;
+                this.selectedOption = "";  // for single choice
+                this.selectedOptions = [];  // for multiple choice
             });
         }).catch((e)=>{
             this._$timeout(() => {
@@ -434,11 +449,7 @@ class pollsCtrl {
         this.createIndex = false;
         this.showDetails = false;
         this.tab = tab;
-        if(tab === 4){ //options tab
-        }
-        else{
-            this.updateList();
-        }
+        this.updateList();
     }
 
     // for setting (VOTE/MULTISIG/RESULTS tabs)
@@ -447,10 +458,12 @@ class pollsCtrl {
         if (tab === 1) {
             this.showVote = true;
             this.multisigVote = false;
+            this.checkValidVote();
         } else if (tab === 2) {
             this.multisigAccount = this._DataStore.account.metaData.meta.cosignatoryOf[0];
             this.showVote = true;
             this.multisigVote = true;
+            this.checkValidVote();
         } else if (tab === 3) {
             this.showVote = false;
             this.multisigVote = false;
@@ -504,8 +517,12 @@ class pollsCtrl {
             return true;
         }
         let address = this._Wallet.currentAccount.address;
+        if (this.multisigVote) {
+            address = this.multisigAccount.address;
+        }
         if (type === 1) {
-            return (header.whitelist.indexOf(address) > -1);
+            console.log("check address", address);
+            return this._Voting.isInWhitelist(address, header.whitelist);
         } else if (type === 2) {
             let namespace = header.mosaic.split(':')[0];
             let mosaic = header.mosaic.split(':')[1];
@@ -526,14 +543,18 @@ class pollsCtrl {
             this.pollsList = this.allPolls.filter((poll) => {
                 return (poll.doe <= now);
             });
+        } else if (this.tab === 4) {
+            this.pollsList = this.allPolls.filter((poll) => {
+                return (poll.creator === "NCXFX5P56EXXWDRUWAWXDWYJHEFV26WVC5VJ6GY2");
+            });
         }
 
-        if (this.onlyVotable) {
-            this.pollsList = this.pollsList.filter(this.isVotable.bind(this));
-        }
+        // if (this.onlyVotable) {
+        //     this.pollsList = this.pollsList.filter(this.isVotable.bind(this));
+        // }
     }
 
-    // gets al the poll headers on the poll index
+    // gets all the poll headers on the poll index
     getPolls() {
         //get all polls
         this.loadingPolls = true;
