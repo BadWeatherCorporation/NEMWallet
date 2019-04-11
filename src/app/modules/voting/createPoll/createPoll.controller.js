@@ -24,6 +24,7 @@ class createPollCtrl {
         else{
             this.pollIndexAccount = "NAZN26HYB7C5HVYVJ4SL3KBTDT773NZBAOMGRFZB";
         }
+        this.creatorAddress = this._Wallet.currentAccount.address;
 
         // names of types
         this.pollTypes = ['POI', 'White List'];
@@ -64,7 +65,6 @@ class createPollCtrl {
         this.issues.titleTooLong = false;
         this.issues.descriptionTooLong = false;
         this.issues.optionsTooLong = false;
-        this.issues.whitelistTooLong = false;
         this.issues.pollTooLong = false;
 
         // Common
@@ -82,6 +82,9 @@ class createPollCtrl {
 
         // To lock our send button if a transaction is not finished processing
         this.creating = false;
+
+        // if the poll is private then it won't be sent to the public index, instead the header will be sent to the creator's account
+        this.private = false;
 
         this.checkFormData();
         //this.updateCurrentAccountMosaics();
@@ -225,9 +228,7 @@ class createPollCtrl {
             doe: this.formData.doe,
             address: this.MOCK_ADDRESS
         };
-        if (this.formData.type === 1) {
-            header.whitelist = this.whitelist;
-        } else if (this.formData.type === 2) {
+        if (this.formData.type === 2) {
             header.mosaic = this.formData.mosaic;
         }
         this.pollMessage = "poll:" + JSON.stringify(header);
@@ -235,7 +236,6 @@ class createPollCtrl {
         this.issues.titleTooLong = (this._VotingUtils.getMessageLength(this.formDataMessage) > 1024) || (this._VotingUtils.getMessageLength(this.formData.title) > 420);
         this.issues.descriptionTooLong = (this._VotingUtils.getMessageLength(this.descriptionMessage) > 1024);
         this.issues.optionsTooLong = (this._VotingUtils.getMessageLength(this.optionsMessage) > 1024);
-        this.issues.whitelistTooLong = (this._VotingUtils.getMessageLength(this.whitelistMessage) > 1024);
         this.issues.pollTooLong = (this._VotingUtils.getMessageLength(this.pollMessage) > 1024);
 
         if (this.issues.titleTooLong || this.issues.descriptionTooLong || this.issues.optionsTooLong || this.issues.pollTooLong || (this.issues.whitelistTooLong && this.hasWhitelist))
@@ -246,15 +246,15 @@ class createPollCtrl {
 
     // Calculates the fee cost of the messages
     calculateFee() {
-        var total = 0;
-        total += this._VotingUtils.getMessageFee(this.formDataMessage);
-        total += this._VotingUtils.getMessageFee(this.descriptionMessage);
-        total += this._VotingUtils.getMessageFee(this.optionsMessage);
-        total += this._VotingUtils.getMessageFee(this.pollMessage);
-        if (this.formData.type === 1) {
-            total += this._VotingUtils.getMessageFee(this.whitelistMessage);
-        }
-        return total;
+        var details = {}
+        details.formData = this.formData;
+        if (this.formData.type !== 2)
+            delete details.formData.mosaic;
+        details.options = this.options;
+        details.description = this.description;
+        details.whitelist = this.whitelist;
+
+        return this._Voting.getBroadcastFee(details, this.pollIndexAccount);
     }
 
     // clears all form fields
@@ -336,10 +336,16 @@ class createPollCtrl {
         details.description = this.description;
         details.whitelist = this.whitelist;
 
-        this._Voting.createPoll(details, this.pollIndexAccount, this.common).then(d => {
-            this.creating = false;
-            this._Alert.pollCreationSuccess();
-            this.clearForm();
+        const indexAddress = (this.private) ? this.creatorAddress : this.pollIndexAccount;
+
+        console.log("index address: ", indexAddress);
+
+        this._Voting.createPoll(details, indexAddress, this.common).then(d => {
+            this._$timeout(() => {
+                this.creating = false;
+                this._Alert.pollCreationSuccess();
+                this.clearForm();
+            });
         }).catch(err => {
             this._$timeout(() => {
                 this.creating = false;
@@ -351,6 +357,14 @@ class createPollCtrl {
                 this.clearForm();
             });
         });
+    }
+
+    isPrivate() {
+        return this.private;
+    }
+
+    togglePrivate() {
+        this.private = !this.private;
     }
 
 }

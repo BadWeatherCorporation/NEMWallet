@@ -386,7 +386,7 @@ function JapaneseProvider($translateProvider) {
       PORTAL_HARVESTING_TITLE: "デリゲートハーベスティング（委任）",
       PORTAL_HARVESTING_TEXT: "デリゲートハーベスティングは、アカウントが起動していない時間でもリモート・ノードを介して「マイニング（ハーベスト）」を可能にする機能です。",
       PORTAL_EXCHANGE_TITLE: 'インスタントエクスチェンジ',
-      PORTAL_EXCHANGE_TEXT: 'ChangellyやShapeShiftウィジェットを使って、最適レートでXEMを購入しましょう！',
+      PORTAL_EXCHANGE_TEXT: 'Changellyウィジェットを使って、最適レートでXEMを購入しましょう！',
       PORTAL_EXCHANGE_BTN: 'XEMを購入',
       PORTAL_NS_TITLE: "ネームスペースとサブドメイン",
       PORTAL_NS_TEXT: "ネームスペースはドメイン名のようなものです。ネームスペース名はユニーク(他に同一の名称無し)であり、その配下にサブネームスペースやモザイク （アセット） を発行する事ができます。",
@@ -863,8 +863,13 @@ function JapaneseProvider($translateProvider) {
       IMPORT_WALLET_QRCODE_INFORMATION: 'サポートしているウォレットQRコード: NEM wechat wallet, ios, android.',
       IMPORT_WALLET_QRCODE_LOAD: 'ウォレットQRコードを読み込む',
       IMPORT_WALLET_QRCODE_SCAN: 'スキャン',
-      IMPORT_WALLET_QRCODE_STOP_SCAN: 'スキャン停止'
+      IMPORT_WALLET_QRCODE_STOP_SCAN: 'スキャン停止',
 
+      //NEMonster
+      NEMONSTER_SHORT_DESC: "NEMonsters へようこそ！NEMブロックチェーン上のウィットに富んだちょっとしたコレクションゲームです。",
+      NEMONSTER_CATCH: "捕まえる",
+      NEMONSTER_GET: "モンスターをゲットする",
+      NEMONSTER_DESC: "NEMonstersへようこそ！NEMブロックチェーン上のウィットに富んだちょっとしたコレクションゲームです。あなたは色、名前、特徴付けのスパイスより110,000,000種の異なる組み合わせから作られたモンスターを捕獲して集めることができます。決まったトランザクションを送ることでモンスターを捕獲できます。モンスターはトランザクションが承認されると召喚されます。あなたの新しい(邪悪な)モンスターの特徴はトランザクションハッシュに基づきます。クールでしょ？NEM基盤からモンスターを捕まえられるか確かめてみよう。"
     });
 
 }

@@ -384,7 +384,7 @@ function EnglishProvider($translateProvider) {
         PORTAL_HARVESTING_TITLE: 'Delegated Harvesting',
         PORTAL_HARVESTING_TEXT: 'Delegated harvesting is the feature that allows "mining" even while your account is closed.',
         PORTAL_EXCHANGE_TITLE: 'Instant Exchanges',
-        PORTAL_EXCHANGE_TEXT: 'Use Changelly and ShapeShift widgets to buy XEM at the best rates!',
+        PORTAL_EXCHANGE_TEXT: 'Use Changelly widget to buy XEM at the best rates!',
         PORTAL_EXCHANGE_BTN: 'Buy XEM',
         PORTAL_NS_TITLE: 'Namespaces & Subdomains',
         PORTAL_NS_TEXT: 'Namespaces are domain names. Each namespace is unique and authenticates mosaics (assets) issued on it or on its subdomains.',
@@ -946,8 +946,12 @@ function EnglishProvider($translateProvider) {
         QRTX_SIGN_CHANGE_ACCOUNT: 'Use different wallet/account',
         QRTX_SIGN_SIGNATURE_FOR: 'Signature for:',
 
+        //NEMonster
+        NEMONSTER_SHORT_DESC: "Welcome to NEMonsters, a witty little collection game based on the NEM blockchain.",
+        NEMONSTER_CATCH: "Catch",
+        NEMONSTER_GET: "Get some monsters",
+        NEMONSTER_DESC: "Welcome to NEMonsters, a witty little collection game based on the NEM blockchain. You can catch and collect over 110,000,000 different combinations of generated monsters; spanning from different colors, names and other spicy characteristics.  You catch a new monster by sending a fixed transaction; the monster is summoned when the transaction is confirmed. The characteristics of your new (evil) monster is based on the transaction hash – how cool is that. See if you can catch some of the monsters from the NEM foundation."
     });
-
 }
 
 export default EnglishProvider;
